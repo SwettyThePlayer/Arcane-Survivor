@@ -1,3 +1,5 @@
+import { CONFIG } from "./config.js";
+
 const elements = {
     menuScreen: document.getElementById("menu-screen"),
     gameHud: document.getElementById("game-hud"),
@@ -6,6 +8,9 @@ const elements = {
     restartButton: document.getElementById("restart-button"),
     hpFill: document.getElementById("hp-fill"),
     hpText: document.getElementById("hp-text"),
+    levelText: document.getElementById("level-text"),
+    xpText: document.getElementById("xp-text"),
+    xpFill: document.getElementById("xp-fill"),
     bestScore: document.getElementById("best-score"),
     finalTime: document.getElementById("final-time"),
     finalKills: document.getElementById("final-kills"),
@@ -55,6 +60,21 @@ export function updateHUD(player) {
     elements.hpFill.style.width = `${hpPercentage}%`;
     elements.hpText.textContent =
         `${Math.ceil(player.hp)} / ${player.maxHp}`;
+
+    const xpNeeded = CONFIG.xp.xpNeeded(player.level);
+    const xpPercentage = Math.max(
+        0,
+        Math.min(100, (player.xp / xpNeeded) * 100)
+    );
+
+    elements.levelText.textContent =
+        `LEVEL ${player.level}`;
+
+    elements.xpText.textContent =
+        `${player.xp} / ${xpNeeded} XP`;
+
+    elements.xpFill.style.width =
+        `${xpPercentage}%`;
 }
 
 export function showGameOver(time, kills, isNewRecord = false) {

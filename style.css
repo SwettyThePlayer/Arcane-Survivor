@@ -238,6 +238,54 @@ button:focus-visible {
     font-weight: bold;
 }
 
+.xp-container {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: rgba(21, 19, 33, 0.9);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+}
+
+.xp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#level-text {
+    color: var(--purple-light);
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+#xp-text {
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+.xp-bar {
+    width: 100%;
+    height: 9px;
+    overflow: hidden;
+    background: #292039;
+    border-radius: 10px;
+}
+
+.xp-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        var(--purple-dark),
+        var(--purple-light)
+    );
+    border-radius: 10px;
+    transition: width 0.2s ease;
+    box-shadow: 0 0 8px rgba(155, 109, 255, 0.4);
+}
+
 @media (max-width: 500px) {
     .menu-content {
         padding: 30px 20px;

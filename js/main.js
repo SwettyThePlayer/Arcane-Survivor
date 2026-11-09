@@ -30,24 +30,19 @@ const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
 const state = {
     mode: "MENU",
-
     player: null,
-
     enemies: [],
     projectiles: [],
     gems: [],
     particles: [],
     texts: [],
-
     time: 0,
     kills: 0,
-
     spawnTimer: 0,
     shake: 0,
-
+    pendingLevelUps: 0,
     upgradeStacks: {},
     muted: false,
-
     keys: null
 };
 
@@ -58,7 +53,6 @@ function resizeCanvas() {
     canvas.height = window.innerHeight;
     if (state.player) {
         const radius = state.player.radius;
-
         state.player.x = clamp(
             state.player.x,
             radius,
@@ -82,29 +76,23 @@ function clearMovementKeys() {
 
 function resetRun() {
     state.player = createPlayer(canvas);
-
     state.enemies = [];
     state.projectiles = [];
     state.gems = [];
     state.particles = [];
     state.texts = [];
-
     state.time = 0;
     state.kills = 0;
-
     state.spawnTimer = CONFIG.spawn.startInterval;
     state.shake = 0;
-
     state.upgradeStacks = {};
-
+    state.pendingLevelUps = 0;
     clearMovementKeys();
 }
 
 function startGame() {
     resetRun();
-
     state.mode = "PLAYING";
-
     showHUD();
     updateHUD(state.player);
 }
@@ -140,6 +128,16 @@ function handlePlayerCollision() {
     }
 }
 
+function processLevelUps() {
+    const player = state.player;
+    while (player.xp >= CONFIG.xp.xpNeeded(player.level)) {
+        const requiredXP = CONFIG.xp.xpNeeded(player.level);
+        player.xp -= requiredXP;
+        player.level++;
+        state.pendingLevelUps++;
+    }
+}
+
 function updateGame(dt) {
     state.time += dt;
     updatePlayer(
@@ -168,6 +166,7 @@ function updateGame(dt) {
         dropGem(state, enemy);
     }
     updateGems(state, dt);
+    processLevelUps();
     handlePlayerCollision();
     updateHUD(state.player);
     if (state.player.hp <= 0) {
