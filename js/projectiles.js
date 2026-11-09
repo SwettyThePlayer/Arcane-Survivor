@@ -1,4 +1,3 @@
-import { CONFIG } from "./config.js";
 import { circlesCollide } from "./utils.js";
 
 export function fireProjectiles(player, target, projectiles) {
@@ -7,15 +6,13 @@ export function fireProjectiles(player, target, projectiles) {
         target.y - player.y,
         target.x - player.x
     );
-    const spreadAngle = CONFIG.weapon.spreadAngle ?? 0;
-
+    const spreadAngle = 0;
     for (let i = 0; i < count; i++) {
         let angle = baseAngle;
         if (count > 1) {
             const spreadPosition = i / (count - 1) - 0.5;
             angle += spreadPosition * spreadAngle;
         }
-
         const projectile = {
             x: player.x,
             y: player.y,
@@ -27,7 +24,6 @@ export function fireProjectiles(player, target, projectiles) {
             pierceLeft: player.stats.pierce,
             hitIds: new Set()
         };
-
         projectiles.push(projectile);
     }
 }
@@ -65,6 +61,7 @@ export function updateProjectiles(state, dt) {
             state.projectiles.splice(i, 1);
         }
     }
-
+    const killedEnemies = state.enemies.filter(enemy => enemy.hp <= 0);
     state.enemies = state.enemies.filter(enemy => enemy.hp > 0);
+    return killedEnemies;
 }
