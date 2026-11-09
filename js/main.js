@@ -2,6 +2,8 @@ import { CONFIG } from "./config.js";
 
 import { setupInput } from "./input.js";
 
+import { dropGem, updateGems } from "./pickups.js";
+
 import {
     createPlayer,
     updatePlayer,
@@ -159,9 +161,13 @@ function updateGame(dt) {
             state.projectiles
         );
     }
-    const previousEnemyCount = state.enemies.length;
-    updateProjectiles(state, dt);
-    state.kills += previousEnemyCount - state.enemies.length;
+    const killedEnemies = updateProjectiles(state, dt);
+    for (const enemy of killedEnemies) {
+        state.kills++;
+
+        dropGem(state, enemy);
+    }
+    updateGems(state, dt);
     handlePlayerCollision();
     updateHUD(state.player);
     if (state.player.hp <= 0) {
@@ -171,6 +177,30 @@ function updateGame(dt) {
             state.time,
             state.kills
         );
+    }
+}
+
+function drawGems() {
+    const radius = CONFIG.xp.gemRadius;
+    for (const gem of state.gems) {
+        ctx.fillStyle = "#a970ff";
+        ctx.beginPath();
+        ctx.moveTo(gem.x, gem.y - radius);
+        ctx.lineTo(gem.x + radius, gem.y);
+        ctx.lineTo(gem.x, gem.y + radius);
+        ctx.lineTo(gem.x - radius, gem.y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = "#e5d2ff";
+        ctx.beginPath();
+        ctx.arc(
+            gem.x - radius * 0.2,
+            gem.y - radius * 0.2,
+            radius * 0.18,
+            0,
+            Math.PI * 2
+        );
+        ctx.fill();
     }
 }
 
@@ -236,6 +266,7 @@ function drawGame() {
         canvas.width,
         canvas.height
     );
+    drawGems();
     drawProjectiles();
     drawEnemies();
     drawPlayer();
