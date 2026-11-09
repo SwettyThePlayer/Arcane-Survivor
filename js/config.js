@@ -75,29 +75,36 @@ export const CONFIG = {
             return 5 + level * 5;
         }
     },
-
     upgrades: {
+        choicesPerLevel: 3,
+        fallbackHealPercent: 0.30,
+
         damage: {
             multiplier: 1.20,
             maxStacks: 8
         },
+
         fireRate: {
             multiplier: 1.15,
             maxStacks: 8
         },
+
         speed: {
             multiplier: 1.10,
             maxStacks: 5
         },
+
         maxHp: {
             increase: 20,
             heal: 20,
             maxStacks: 8
         },
+
         pickup: {
             multiplier: 1.30,
             maxStacks: 5
         },
+
         multishot: {
             increase: 1,
             maxStacks: 4
