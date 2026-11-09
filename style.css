@@ -286,6 +286,126 @@ button:focus-visible {
     box-shadow: 0 0 8px rgba(155, 109, 255, 0.4);
 }
 
+.level-up-content {
+    max-width: 900px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+.level-up-content h1 {
+    color: var(--purple-light);
+    text-shadow: 0 0 20px rgba(155, 109, 255, 0.3);
+}
+
+.level-up-content .subtitle {
+    margin-bottom: 0;
+}
+
+.upgrade-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.upgrade-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 220px;
+    padding: 24px 18px;
+    background: linear-gradient(
+        160deg,
+        #211a32,
+        #151321
+    );
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    text-align: center;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.upgrade-card:hover {
+    background: linear-gradient(
+        160deg,
+        #302246,
+        #20182f
+    );
+    border-color: var(--purple);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(155, 109, 255, 0.18);
+}
+
+.upgrade-card:active {
+    transform: translateY(-2px);
+}
+
+.upgrade-icon {
+    margin-bottom: 16px;
+    font-size: 38px;
+    line-height: 1;
+}
+
+.upgrade-name {
+    margin-bottom: 12px;
+    color: var(--purple-light);
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.upgrade-description {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1.6;
+    letter-spacing: normal;
+}
+
+.upgrade-key {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 26px;
+    height: 26px;
+    margin-bottom: 16px;
+    background: rgba(155, 109, 255, 0.15);
+    border: 1px solid var(--purple-dark);
+    border-radius: 6px;
+    color: var(--purple-light);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+@media (max-width: 700px) {
+
+    .level-up-content {
+        padding: 25px 18px;
+    }
+
+    .upgrade-cards {
+        grid-template-columns: 1fr;
+        gap: 10px;
+
+        margin-top: 20px;
+    }
+
+    .upgrade-card {
+        min-height: 150px;
+        padding: 18px;
+    }
+
+    .upgrade-icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+}
+
 @media (max-width: 500px) {
     .menu-content {
         padding: 30px 20px;
