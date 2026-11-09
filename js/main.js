@@ -22,8 +22,15 @@ import {
     showMenu,
     showHUD,
     updateHUD,
-    showGameOver
+    showGameOver,
+    showLevelUp
 } from "./ui.js";
+
+import {
+    getRandomUpgrades,
+    applyUpgrade,
+    healPlayer
+} from "./upgrades.js";
 
 import { clamp, circlesCollide } from "./utils.js";
 const canvas = document.getElementById("game-canvas");
@@ -88,6 +95,27 @@ function resetRun() {
     state.upgradeStacks = {};
     state.pendingLevelUps = 0;
     clearMovementKeys();
+}
+function presentNextLevelUp() {
+    const choices = getRandomUpgrades(state);
+    showLevelUp(choices, handleUpgradeSelection);
+}
+
+function handleUpgradeSelection(choice) {
+    if (choice === null) {
+        healPlayer(state);
+    } else {
+        applyUpgrade(state, choice);
+    }
+    state.pendingLevelUps--;
+    updateHUD(state.player);
+    if (state.pendingLevelUps > 0) {
+        presentNextLevelUp();
+        return;
+    }
+    state.mode = "PLAYING";
+    showHUD();
+    updateHUD(state.player);
 }
 
 function startGame() {
@@ -171,11 +199,16 @@ function updateGame(dt) {
     updateHUD(state.player);
     if (state.player.hp <= 0) {
         state.mode = "GAME_OVER";
-
         showGameOver(
             state.time,
             state.kills
         );
+        return;
+    }
+    if (state.pendingLevelUps > 0) {
+        state.mode = "LEVEL_UP";
+        clearMovementKeys();
+        presentNextLevelUp();
     }
 }
 
