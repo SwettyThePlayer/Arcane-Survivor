@@ -1,7 +1,3 @@
-/* ==============================
-   GLOBAL STYLES
-================================ */
-
 * {
     margin: 0;
     padding: 0;
@@ -35,15 +31,9 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* The browser should never display hidden UI elements. */
 [hidden] {
     display: none !important;
 }
-
-
-/* ==============================
-   GAME CANVAS
-================================ */
 
 #game-canvas {
     position: fixed;
@@ -56,11 +46,6 @@ body {
     display: block;
     background: var(--background);
 }
-
-
-/* ==============================
-   SCREENS
-================================ */
 
 .screen {
     position: fixed;
@@ -76,11 +61,6 @@ body {
     background: rgba(8, 7, 14, 0.88);
     backdrop-filter: blur(6px);
 }
-
-
-/* ==============================
-   MENU CONTENT
-================================ */
 
 .menu-content {
     width: 100%;
@@ -121,11 +101,6 @@ body {
     font-size: 14px;
 }
 
-
-/* ==============================
-   BUTTONS
-================================ */
-
 button {
     width: 100%;
     padding: 15px 20px;
@@ -164,11 +139,6 @@ button:focus-visible {
     outline-offset: 4px;
 }
 
-
-/* ==============================
-   CONTROLS
-================================ */
-
 .controls {
     margin-top: 35px;
     padding-top: 25px;
@@ -191,11 +161,6 @@ button:focus-visible {
     color: var(--text-muted);
     font-size: 13px;
 }
-
-
-/* ==============================
-   GAME HUD
-================================ */
 
 #game-hud {
     position: fixed;
@@ -252,11 +217,6 @@ button:focus-visible {
     text-align: right;
 }
 
-
-/* ==============================
-   GAME OVER
-================================ */
-
 .game-over-title {
     color: var(--red) !important;
 }
@@ -277,11 +237,6 @@ button:focus-visible {
     font-size: 14px;
     font-weight: bold;
 }
-
-
-/* ==============================
-   RESPONSIVE LAYOUT
-================================ */
 
 @media (max-width: 500px) {
     .menu-content {
