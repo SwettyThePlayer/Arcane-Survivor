@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcane Survivor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Main game canvas -->
+    <canvas id="game-canvas"></canvas>
+
+
+    <!-- Main menu -->
+    <div id="menu-screen" class="screen">
+
+        <div class="menu-content">
+            <h1>ARCANE SURVIVOR</h1>
+
+            <p class="subtitle">Survive the endless horde.</p>
+
+            <p id="best-score">Best time: --</p>
+
+            <button id="start-button">START GAME</button>
+
+            <div class="controls">
+                <h2>CONTROLS</h2>
+                <p>WASD / Arrow Keys — Move</p>
+                <p>Weapon fires automatically</p>
+                <p>Survive as long as possible!</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- In-game HUD -->
+    <div id="game-hud" hidden>
+
+        <div class="hp-container">
+            <span class="hud-label">HP</span>
+
+            <div class="hp-bar">
+                <div id="hp-fill" class="hp-fill"></div>
+            </div>
+
+            <span id="hp-text">-- / --</span>
+        </div>
+
+    </div>
+
+    <!-- Game over screen -->
+    <div id="game-over-screen" class="screen" hidden>
+
+        <div class="menu-content">
+            <h1 class="game-over-title">GAME OVER</h1>
+
+            <p id="final-time">Time survived: --</p>
+            <p id="final-kills">Enemies defeated: --</p>
+
+            <p id="new-record"></p>
+
+            <button id="restart-button">RETURN TO MENU</button>
+        </div>
+
+    </div>
+
+    <!-- Game entry point -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
