@@ -1,0 +1,300 @@
+/* ==============================
+   GLOBAL STYLES
+================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --background: #0b0a12;
+    --panel: #151321;
+    --panel-border: #302843;
+
+    --purple: #9b6dff;
+    --purple-light: #bd9aff;
+    --purple-dark: #6035ad;
+
+    --text: #f0ecfa;
+    --text-muted: #9992aa;
+
+    --red: #e05265;
+    --green: #65d69a;
+}
+
+body {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+
+    background: var(--background);
+    color: var(--text);
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* The browser should never display hidden UI elements. */
+[hidden] {
+    display: none !important;
+}
+
+
+/* ==============================
+   GAME CANVAS
+================================ */
+
+#game-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+    background: var(--background);
+}
+
+
+/* ==============================
+   SCREENS
+================================ */
+
+.screen {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    background: rgba(8, 7, 14, 0.88);
+    backdrop-filter: blur(6px);
+}
+
+
+/* ==============================
+   MENU CONTENT
+================================ */
+
+.menu-content {
+    width: 100%;
+    max-width: 440px;
+
+    padding: 40px 30px;
+
+    text-align: center;
+
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+
+    box-shadow: 0 15px 60px rgba(0, 0, 0, 0.5);
+}
+
+.menu-content h1 {
+    margin-bottom: 12px;
+
+    color: var(--purple-light);
+
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+.subtitle {
+    margin-bottom: 25px;
+
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+#best-score {
+    margin-bottom: 25px;
+
+    color: var(--purple-light);
+    font-size: 14px;
+}
+
+
+/* ==============================
+   BUTTONS
+================================ */
+
+button {
+    width: 100%;
+    padding: 15px 20px;
+
+    border: 1px solid var(--purple);
+    border-radius: 8px;
+
+    background: var(--purple-dark);
+    color: white;
+
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+button:hover {
+    background: var(--purple);
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 20px rgba(155, 109, 255, 0.25);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:focus-visible {
+    outline: 2px solid var(--purple-light);
+    outline-offset: 4px;
+}
+
+
+/* ==============================
+   CONTROLS
+================================ */
+
+.controls {
+    margin-top: 35px;
+    padding-top: 25px;
+
+    border-top: 1px solid var(--panel-border);
+}
+
+.controls h2 {
+    margin-bottom: 15px;
+
+    color: var(--purple-light);
+
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+.controls p {
+    margin: 8px 0;
+
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+
+/* ==============================
+   GAME HUD
+================================ */
+
+#game-hud {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 5;
+
+    width: 250px;
+}
+
+.hp-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px 12px;
+
+    background: rgba(21, 19, 33, 0.9);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+}
+
+.hud-label {
+    color: var(--red);
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.hp-bar {
+    flex: 1;
+    height: 12px;
+
+    overflow: hidden;
+
+    background: #35212b;
+    border-radius: 10px;
+}
+
+.hp-fill {
+    width: 100%;
+    height: 100%;
+
+    background: var(--red);
+    border-radius: 10px;
+
+    transition: width 0.15s ease;
+}
+
+#hp-text {
+    min-width: 65px;
+
+    color: var(--text);
+    font-size: 11px;
+    text-align: right;
+}
+
+
+/* ==============================
+   GAME OVER
+================================ */
+
+.game-over-title {
+    color: var(--red) !important;
+}
+
+#final-time,
+#final-kills {
+    margin: 15px 0;
+
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+#new-record {
+    min-height: 24px;
+    margin: 20px 0;
+
+    color: var(--green);
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+/* ==============================
+   RESPONSIVE LAYOUT
+================================ */
+
+@media (max-width: 500px) {
+    .menu-content {
+        padding: 30px 20px;
+    }
+
+    .menu-content h1 {
+        font-size: 25px;
+    }
+
+    #game-hud {
+        top: 12px;
+        left: 12px;
+        width: 230px;
+    }
+}
