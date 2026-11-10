@@ -82,18 +82,23 @@ function createUpgradeCard(choice, index) {
     const card = document.createElement("button");
     card.type = "button";
     card.className = "upgrade-card";
+
     const key = document.createElement("span");
     key.className = "upgrade-key";
     key.textContent = String(index + 1);
+
     const icon = document.createElement("span");
     icon.className = "upgrade-icon";
     icon.textContent = cardData.icon;
+
     const name = document.createElement("span");
     name.className = "upgrade-name";
     name.textContent = cardData.name;
+
     const description = document.createElement("span");
     description.className = "upgrade-description";
     description.textContent = cardData.description;
+    
     card.append(
         key,
         icon,

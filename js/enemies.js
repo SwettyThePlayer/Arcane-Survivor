@@ -15,21 +15,16 @@ export function createEnemy(type, x, y, time) {
     return {
         x,
         y,
-
         vx: 0,
         vy: 0,
-
         type,
         emoji: enemyConfig.emoji,
         radius: enemyConfig.radius,
-
         hp: maxHp,
         maxHp,
-
         speed: enemyConfig.speed,
         damage: enemyConfig.damage,
         xp: enemyConfig.xp,
-
         hitFlash: 0
     };
 }
@@ -48,10 +43,8 @@ function spawnEnemy(state, canvas) {
 
     const selectedType = availableTypes[randomIndex][0];
     const edge = Math.floor(Math.random() * 4);
-
     let x;
     let y;
-
     const radius = CONFIG.enemies[selectedType].radius;
     if (edge === 0) {
         x = randomRange(0, canvas.width);
@@ -69,7 +62,6 @@ function spawnEnemy(state, canvas) {
         x = canvas.width + radius;
         y = randomRange(0, canvas.height);
     }
-
     const enemy = createEnemy(
         selectedType,
         x,

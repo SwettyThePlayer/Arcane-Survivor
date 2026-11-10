@@ -351,5 +351,4 @@ window.addEventListener(
 );
 
 showMenu();
-
 requestAnimationFrame(gameLoop);

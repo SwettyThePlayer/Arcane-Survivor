@@ -62,6 +62,7 @@ export function updateProjectiles(state, dt) {
             state.projectiles.splice(i, 1);
         }
     }
+    
     const killedEnemies = state.enemies.filter(enemy => enemy.hp <= 0);
     state.enemies = state.enemies.filter(enemy => enemy.hp > 0);
     return killedEnemies;

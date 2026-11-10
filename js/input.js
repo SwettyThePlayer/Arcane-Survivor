@@ -48,7 +48,6 @@ export function setupInput(state) {
         state.keys[direction] = false;
     }
 
-
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
 

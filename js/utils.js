@@ -16,14 +16,12 @@ export function normalizeVector(x, y) {
 export function distanceSquared(x1, y1, x2, y2) {
     const dx = x2 - x1;
     const dy = y2 - y1;
-
     return dx * dx + dy * dy;
 }
 
 export function circlesCollide(a, b) {
     const distance = distanceSquared(a.x, a.y, b.x, b.y);
     const combinedRadius = a.radius + b.radius;
-
     return distance < combinedRadius * combinedRadius;
 }
 

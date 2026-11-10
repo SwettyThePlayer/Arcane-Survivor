@@ -5,19 +5,15 @@ export function createPlayer(canvas) {
     const player = {
         x: canvas.width / 2,
         y: canvas.height / 2,
-
         radius: CONFIG.player.radius,
         hp: CONFIG.player.maxHp,
         maxHp: CONFIG.player.maxHp,
         speed: CONFIG.player.speed,
         pickupRange: CONFIG.player.pickupRange,
-
         level: 1,
         xp: 0,
-
         fireTimer: 0,
         invulnTimer: 0,
-
         stats: {
             damage: CONFIG.weapon.damage,
             fireRate: CONFIG.weapon.fireRate,
@@ -34,7 +30,6 @@ export function createPlayer(canvas) {
 export function updatePlayer(player, keys, dt, canvas) {
     let moveX = 0;
     let moveY = 0;
-
     if (keys.left) moveX -= 1;
     if (keys.right) moveX += 1;
     if (keys.up) moveY -= 1;
