@@ -14,6 +14,7 @@ export function createPlayer(canvas) {
         xp: 0,
         pulseTimer: 0,
         pulseEffectTimer: 0,
+        damageFlash: 0,
         fireTimer: 0,
         invulnTimer: 0,
         stats: {

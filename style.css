@@ -197,6 +197,51 @@ button:focus-visible {
     text-shadow: 0 0 18px rgba(224, 82, 101, 0.8);
 }
 
+#boss-hud {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+
+    width: min(440px, 60vw);
+    padding: 10px 14px;
+
+    background: rgba(21, 19, 33, 0.92);
+    border: 1px solid rgba(224, 82, 101, 0.65);
+    border-radius: 8px;
+    box-shadow: 0 0 22px rgba(224, 82, 101, 0.18);
+}
+
+.boss-hud-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+
+    color: #ff8291;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.boss-hp-bar {
+    height: 12px;
+    overflow: hidden;
+
+    background: #35212b;
+    border: 1px solid rgba(255, 130, 145, 0.4);
+    border-radius: 10px;
+}
+
+.boss-hp-fill {
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(90deg, #a32346, #ff6478);
+    border-radius: inherit;
+    transition: width 0.15s ease;
+}
+
 .hp-container {
     display: flex;
     align-items: center;

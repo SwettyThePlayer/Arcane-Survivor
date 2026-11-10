@@ -14,7 +14,7 @@ import { updateEnemies } from "./enemies.js";
 import {
     drawPulse,
     updatePulse,
-    recordDamage,
+    recordPlayerDamage,
     updateCombatEffects,
     drawDamageNumbers
 } from "./effects.js";
@@ -109,6 +109,18 @@ function resetRun() {
     state.pendingLevelUps = 0;
     clearMovementKeys();
 }
+
+function updateRunHUD() {
+    const boss = state.enemies.find(enemy => enemy.type === "boss") || null;
+    updateHUD(
+        state.player,
+        state.time,
+        state.kills,
+        state.bossWarningSeconds,
+        boss
+    );
+}
+
 function presentNextLevelUp() {
     const choices = getRandomUpgrades(state);
     showLevelUp(choices, handleUpgradeSelection);
@@ -121,36 +133,21 @@ function handleUpgradeSelection(choice) {
         applyUpgrade(state, choice);
     }
     state.pendingLevelUps--;
-    updateHUD(
-        state.player,
-        state.time,
-        state.kills,
-        state.bossWarningSeconds
-    );
+    updateRunHUD();
     if (state.pendingLevelUps > 0) {
         presentNextLevelUp();
         return;
     }
     state.mode = "PLAYING";
     showHUD();
-    updateHUD(
-        state.player,
-        state.time,
-        state.kills,
-        state.bossWarningSeconds
-    );
+    updateRunHUD();
 }
 
 function startGame() {
     resetRun();
     state.mode = "PLAYING";
     showHUD();
-    updateHUD(
-        state.player,
-        state.time,
-        state.kills,
-        state.bossWarningSeconds
-    );
+    updateRunHUD();
 }
 
 function returnToMenu() {
@@ -178,9 +175,10 @@ function handlePlayerCollision() {
         if (!circlesCollide(player, enemy)) {
             continue;
         }
-        player.hp = Math.max(0, player.hp - enemy.damage);
+        const damageTaken = Math.min(player.hp, enemy.damage);
+        player.hp = Math.max(0, player.hp - damageTaken);
         player.invulnTimer = CONFIG.player.invulnTime;
-        recordDamage(state, enemy, enemy.damage);
+        recordPlayerDamage(state, player, damageTaken);
         break;
     }
 }
@@ -228,12 +226,7 @@ function updateGame(dt) {
     updateGems(state, dt);
     processLevelUps();
     handlePlayerCollision();
-    updateHUD(
-        state.player,
-        state.time,
-        state.kills,
-        state.bossWarningSeconds
-    );
+    updateRunHUD();
     if (state.player.hp <= 0) {
         state.mode = "GAME_OVER";
         showGameOver(
@@ -320,7 +313,6 @@ function drawEnemies() {
         );
         ctx.shadowBlur = 0;
     }
-    drawDamageNumbers(ctx, state.texts);
 }
 
 function drawPlayer() {
@@ -329,6 +321,10 @@ function drawPlayer() {
     }
     const player = state.player;
     ctx.globalAlpha = player.invulnTimer > 0 ? 0.5 : 1;
+    if (player.damageFlash > 0) {
+        ctx.shadowColor = "#ff344f";
+        ctx.shadowBlur = 24;
+    }
     ctx.font = `${player.radius * 2}px serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -337,6 +333,24 @@ function drawPlayer() {
         player.x,
         player.y
     );
+    if (player.damageFlash > 0) {
+        ctx.globalAlpha = Math.min(
+            1,
+            player.damageFlash / CONFIG.effects.playerDamageFlashDuration
+        );
+        ctx.strokeStyle = "#ff344f";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(
+            player.x,
+            player.y,
+            player.radius + 5,
+            0,
+            Math.PI * 2
+        );
+        ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
     ctx.globalAlpha = 1;
 }
 function drawGame() {
@@ -359,6 +373,7 @@ function drawGame() {
     drawPulse(ctx, state.player);
     drawEnemies();
     drawPlayer();
+    drawDamageNumbers(ctx, state.texts);
 }
 
 function gameLoop(now) {

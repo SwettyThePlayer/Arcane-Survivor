@@ -35,7 +35,25 @@
 
             <p id="boss-warning" hidden></p>
 
-            <div class="hp-container">
+        <div id="boss-hud" hidden>
+            <div class="boss-hud-header">
+                <span>👹 BOSS</span>
+                <span id="boss-hp-text">-- / --</span>
+            </div>
+            <div
+                id="boss-hp-bar"
+                class="boss-hp-bar"
+                role="progressbar"
+                aria-label="Boss health"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="100"
+            >
+                <div id="boss-hp-fill" class="boss-hp-fill"></div>
+            </div>
+        </div>
+
+        <div class="hp-container">
             <span class="hud-label">HP</span>
 
             <div class="hp-bar">

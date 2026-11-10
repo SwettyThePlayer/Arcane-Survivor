@@ -22,7 +22,11 @@ const elements = {
     upgradeCards: document.getElementById("upgrade-cards"),
     timeText: document.getElementById("time-text"),
     killsText: document.getElementById("kills-text"),
-    bossWarning: document.getElementById("boss-warning")
+    bossWarning: document.getElementById("boss-warning"),
+    bossHud: document.getElementById("boss-hud"),
+    bossHpFill: document.getElementById("boss-hp-fill"),
+    bossHpBar: document.getElementById("boss-hp-bar"),
+    bossHpText: document.getElementById("boss-hp-text")
 };
 
 let activeChoices = [];
@@ -191,7 +195,8 @@ export function updateHUD(
     player,
     time = 0,
     kills = 0,
-    bossWarningSeconds = 0
+    bossWarningSeconds = 0,
+    boss = null
 ) {
     const hpPercentage = Math.max(
         0,
@@ -217,6 +222,25 @@ export function updateHUD(
     if (bossWarningSeconds > 0) {
         elements.bossWarning.textContent =
             `BOSS APPROACHING — ${Math.ceil(bossWarningSeconds)}s`;
+    }
+    elements.bossHud.hidden = !boss;
+    if (boss) {
+        const bossHp = Math.max(0, boss.hp);
+        const bossHpPercentage = Math.max(
+            0,
+            Math.min(100, (bossHp / boss.maxHp) * 100)
+        );
+        elements.bossHpFill.style.width = `${bossHpPercentage}%`;
+        elements.bossHpText.textContent =
+            `${Math.ceil(bossHp)} / ${Math.ceil(boss.maxHp)}`;
+        elements.bossHpBar.setAttribute(
+            "aria-valuenow",
+            String(Math.ceil(bossHp))
+        );
+        elements.bossHpBar.setAttribute(
+            "aria-valuemax",
+            String(Math.ceil(boss.maxHp))
+        );
     }
 }
 

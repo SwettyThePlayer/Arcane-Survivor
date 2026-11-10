@@ -80,7 +80,8 @@ export const CONFIG = {
     effects: {
         hitFlashDuration: 0.12,
         damageTextDuration: 0.55,
-        damageTextRiseSpeed: 35
+        damageTextRiseSpeed: 35,
+        playerDamageFlashDuration: 0.2
     },
     upgrades: {
         choicesPerLevel: 3,

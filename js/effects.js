@@ -11,7 +11,24 @@ export function recordDamage(state, enemy, damage) {
     });
 }
 
+export function recordPlayerDamage(state, player, damage) {
+    player.damageFlash = CONFIG.effects.playerDamageFlashDuration;
+    state.texts.push({
+        x: player.x,
+        y: player.y - player.radius,
+        value: Math.round(damage),
+        color: "#ff6478",
+        life: CONFIG.effects.damageTextDuration
+    });
+}
+
 export function updateCombatEffects(state, dt) {
+    if (state.player) {
+        state.player.damageFlash = Math.max(
+            0,
+            state.player.damageFlash - dt
+        );
+    }
     for (const enemy of state.enemies) {
         enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);
     }
@@ -33,7 +50,7 @@ export function drawDamageNumbers(ctx, texts) {
             text.life / CONFIG.effects.damageTextDuration
         );
         ctx.strokeStyle = "#24192f";
-        ctx.fillStyle = "#ffe5a8";
+        ctx.fillStyle = text.color || "#ffe5a8";
         ctx.strokeText(String(text.value), text.x, text.y);
         ctx.fillText(String(text.value), text.x, text.y);
     }
