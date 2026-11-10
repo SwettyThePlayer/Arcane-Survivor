@@ -36,6 +36,7 @@ import {
     setupUI,
     showMenu,
     showHUD,
+    showPaused,
     updateHUD,
     showGameOver,
     showLevelUp,
@@ -163,6 +164,21 @@ function startGame() {
     state.mode = "PLAYING";
     showHUD();
     updateRunHUD();
+}
+
+function togglePause() {
+    if (state.mode === "PLAYING") {
+        state.mode = "PAUSED";
+        clearMovementKeys();
+        showPaused();
+        return;
+    }
+    if (state.mode === "PAUSED") {
+        state.mode = "PLAYING";
+        clearMovementKeys();
+        showHUD(true);
+        updateRunHUD();
+    }
 }
 
 function returnToMenu() {
@@ -754,12 +770,19 @@ function gameLoop(now) {
 }
 
 function handleGlobalKeyDown(event) {
-
     if (event.repeat) {
         return;
     }
 
     const key = event.key.toLowerCase();
+    if (
+        key === "escape" &&
+        (state.mode === "PLAYING" || state.mode === "PAUSED")
+    ) {
+        event.preventDefault();
+        togglePause();
+        return;
+    }
     if (key === "enter" && state.mode === "MENU") {
         event.preventDefault();
         startGame();
@@ -776,6 +799,7 @@ setupInput(state);
 setupUI(
     startGame,
     returnToMenu,
+    togglePause,
     () => {
         setMuted(audio, !audio.muted);
         state.muted = audio.muted;

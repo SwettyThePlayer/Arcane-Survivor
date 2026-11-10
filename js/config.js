@@ -76,7 +76,8 @@ export const CONFIG = {
         hitFlashDuration: 0.12,
         damageTextDuration: 0.55,
         damageTextRiseSpeed: 35,
-        playerDamageFlashDuration: 0.2
+        playerDamageFlashDuration: 0.2,
+        lowHealthThreshold: 0.25
     },
     audio: {
         volume: 0.08,

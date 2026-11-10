@@ -14,8 +14,15 @@
         class="mute-button"
         type="button"
         aria-pressed="false"
-        aria-label="Toggle sound"
-    >SOUND ON</button>
+        aria-label="Turn sound off"
+        title="Turn sound off"
+    >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 10v4h4l5 4V6l-5 4H4z"></path>
+            <path class="sound-waves" d="M16 9a5 5 0 0 1 0 6m2-9a9 9 0 0 1 0 12"></path>
+            <path class="sound-muted" d="m16 9 5 6m0-6-5 6"></path>
+        </svg>
+    </button>
     <p id="audio-warning" hidden></p>
     <!-- Main menu -->
     <div id="menu-screen" class="screen">
@@ -75,6 +82,19 @@
         </div>
     </div>
 
+    <button
+        id="pause-button"
+        class="pause-button"
+        type="button"
+        aria-label="Pause game"
+        title="Pause game"
+        hidden
+    >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 5h3v14H8zM15 5h3v14h-3z"></path>
+        </svg>
+    </button>
+
     <div id="game-hud" hidden>
         <div class="hud-heading">
             <span>FIELD STATUS</span>
@@ -117,6 +137,25 @@
 
         </div>
 
+    </div>
+    <div
+        id="pause-screen"
+        class="screen"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pause-title"
+        hidden
+    >
+        <div class="menu-content pause-content">
+            <div class="menu-seal" aria-hidden="true"><span>Ⅱ</span></div>
+            <p class="eyebrow">CATCH YOUR BREATH</p>
+            <h1 id="pause-title">PAUSED</h1>
+            <p class="subtitle">The night will wait.</p>
+            <button id="resume-button" class="start-button" type="button">
+                RETURN TO THE ARENA
+            </button>
+            <p class="pause-hint">Press ESC to resume</p>
+        </div>
     </div>
         <!-- Level-up screen -->
     <div id="level-up-screen" class="screen" hidden>

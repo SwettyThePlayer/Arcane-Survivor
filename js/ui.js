@@ -3,9 +3,12 @@ import { CONFIG } from "./config.js";
 const elements = {
     menuScreen: document.getElementById("menu-screen"),
     gameHud: document.getElementById("game-hud"),
+    pauseScreen: document.getElementById("pause-screen"),
     gameOverScreen: document.getElementById("game-over-screen"),
     levelUpScreen: document.getElementById("level-up-screen"),
     startButton: document.getElementById("start-button"),
+    pauseButton: document.getElementById("pause-button"),
+    resumeButton: document.getElementById("resume-button"),
     restartButton: document.getElementById("restart-button"),
     hpFill: document.getElementById("hp-fill"),
     hpText: document.getElementById("hp-text"),
@@ -150,9 +153,10 @@ function createUpgradeCard(choice, index) {
 }
 
 export function updateAudioStatus(muted, warning = "") {
-    elements.muteButton.textContent = muted ? "SOUND OFF" : "SOUND ON";
     elements.muteButton.setAttribute("aria-pressed", String(muted));
-    elements.muteButton.setAttribute("aria-label", "Toggle sound");
+    const label = muted ? "Turn sound on" : "Turn sound off";
+    elements.muteButton.setAttribute("aria-label", label);
+    elements.muteButton.title = label;
     elements.audioWarning.hidden = !warning;
     elements.audioWarning.textContent = warning;
 }
@@ -160,6 +164,7 @@ export function updateAudioStatus(muted, warning = "") {
 export function setupUI(
     onStart,
     onReturnToMenu,
+    onTogglePause,
     onToggleMute,
     muted,
     audioWarning
@@ -170,6 +175,8 @@ export function setupUI(
     elements.restartButton.addEventListener("click", () => {
         onReturnToMenu();
     });
+    elements.pauseButton.addEventListener("click", onTogglePause);
+    elements.resumeButton.addEventListener("click", onTogglePause);
     elements.muteButton.addEventListener("click", () => {
         onToggleMute();
     });
@@ -198,17 +205,30 @@ export function showMenu() {
     clearLevelUpSelection();
     elements.menuScreen.hidden = false;
     elements.gameHud.hidden = true;
+    elements.pauseButton.hidden = true;
+    elements.pauseScreen.hidden = true;
     elements.gameOverScreen.hidden = true;
     elements.levelUpScreen.hidden = true;
     updateRecordsDisplay();
 }
 
-export function showHUD() {
+export function showHUD(restorePauseFocus = false) {
     clearLevelUpSelection();
     elements.menuScreen.hidden = true;
     elements.gameHud.hidden = false;
+    elements.pauseButton.hidden = false;
+    elements.pauseScreen.hidden = true;
     elements.gameOverScreen.hidden = true;
     elements.levelUpScreen.hidden = true;
+    if (restorePauseFocus) {
+        elements.pauseButton.focus();
+    }
+}
+
+export function showPaused() {
+    elements.pauseButton.hidden = true;
+    elements.pauseScreen.hidden = false;
+    elements.resumeButton.focus();
 }
 
 export function updateHUD(
@@ -223,6 +243,10 @@ export function updateHUD(
         Math.min(100, (player.hp / player.maxHp) * 100)
     );
     elements.hpFill.style.width = `${hpPercentage}%`;
+    elements.gameHud.classList.toggle(
+        "low-health",
+        hpPercentage <= CONFIG.effects.lowHealthThreshold * 100
+    );
     elements.hpText.textContent =
         `${Math.ceil(player.hp)} / ${player.maxHp}`;
     const xpNeeded = CONFIG.xp.xpNeeded(player.level);
@@ -287,6 +311,8 @@ export function showLevelUp(upgrades, onSelect) {
     }
     elements.menuScreen.hidden = true;
     elements.gameHud.hidden = true;
+    elements.pauseButton.hidden = true;
+    elements.pauseScreen.hidden = true;
     elements.gameOverScreen.hidden = true;
     elements.levelUpScreen.hidden = false;
 }
@@ -314,6 +340,8 @@ export function showGameOver(time, kills) {
     clearLevelUpSelection();
     elements.menuScreen.hidden = true;
     elements.gameHud.hidden = true;
+    elements.pauseButton.hidden = true;
+    elements.pauseScreen.hidden = true;
     elements.gameOverScreen.hidden = false;
     elements.levelUpScreen.hidden = true;
     elements.finalTime.textContent =
