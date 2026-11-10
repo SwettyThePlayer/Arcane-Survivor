@@ -1,6 +1,5 @@
 export const CONFIG = {
     player: {
-        emoji: "🧙",
         radius: 16,
         speed: 200,
         maxHp: 100,
@@ -21,7 +20,6 @@ export const CONFIG = {
 
     enemies: {
         bat: {
-            emoji: "🦇",
             hp: 8,
             speed: 130,
             damage: 5,
@@ -31,7 +29,6 @@ export const CONFIG = {
         },
 
         skeleton: {
-            emoji: "💀",
             hp: 20,
             speed: 80,
             damage: 8,
@@ -41,7 +38,6 @@ export const CONFIG = {
         },
 
         ghost: {
-            emoji: "👻",
             hp: 35,
             speed: 60,
             damage: 12,
@@ -51,7 +47,6 @@ export const CONFIG = {
         },
 
         boss: {
-            emoji: "👹",
             hp: 600,
             speed: 55,
             damage: 20,

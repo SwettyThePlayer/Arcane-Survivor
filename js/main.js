@@ -329,21 +329,25 @@ function drawOrbs() {
 }
 
 function drawEnemies() {
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
     for (const enemy of state.enemies) {
-        ctx.font = `${enemy.radius * 2}px serif`;
+        ctx.save();
         if (enemy.hitFlash > 0) {
             ctx.shadowColor = "#fff2c2";
             ctx.shadowBlur = 18;
         }
-        ctx.fillText(
-            enemy.emoji,
-            enemy.x,
-            enemy.y
-        );
-        ctx.shadowBlur = 0;
+        if (enemy.type === "bat") {
+            drawBatSprite(enemy);
+        }
+        else if (enemy.type === "skeleton") {
+            drawSkeletonSprite(enemy);
+        }
+        else if (enemy.type === "ghost") {
+            drawGhostSprite(enemy);
+        }
+        else if (enemy.type === "boss") {
+            drawBossSprite(enemy);
+        }
+        ctx.restore();
     }
 }
 
@@ -357,14 +361,7 @@ function drawPlayer() {
         ctx.shadowColor = "#ff344f";
         ctx.shadowBlur = 24;
     }
-    ctx.font = `${player.radius * 2}px serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(
-        CONFIG.player.emoji,
-        player.x,
-        player.y
-    );
+    drawWizardSprite(player);
     if (player.damageFlash > 0) {
         ctx.globalAlpha = Math.min(
             1,
@@ -385,6 +382,337 @@ function drawPlayer() {
     ctx.shadowBlur = 0;
     ctx.globalAlpha = 1;
 }
+
+function drawWizardSprite(player) {
+    ctx.save();
+    ctx.translate(player.x, player.y);
+    const r = player.radius;
+    const robe = ctx.createLinearGradient(-r, 0, r, r);
+    robe.addColorStop(0, "#614293");
+    robe.addColorStop(0.55, "#382859");
+    robe.addColorStop(1, "#241b3d");
+
+    ctx.fillStyle = robe;
+    ctx.strokeStyle = "#b695f0";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.72, r * 0.92);
+    ctx.lineTo(-r * 0.48, -r * 0.05);
+    ctx.quadraticCurveTo(0, -r * 0.42, r * 0.48, -r * 0.05);
+    ctx.lineTo(r * 0.78, r * 0.92);
+    ctx.quadraticCurveTo(0, r * 1.2, -r * 0.72, r * 0.92);
+    ctx.fill();
+    ctx.stroke();
+    drawWizardFace(r);
+    drawWizardHat(r);
+    drawWizardStaff(r);
+    ctx.restore();
+}
+
+function drawWizardFace(radius) {
+    ctx.fillStyle = "#f3c9a7";
+    ctx.beginPath();
+    ctx.arc(0, -radius * 0.22, radius * 0.34, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#30243e";
+    ctx.beginPath();
+    ctx.arc(-radius * 0.12, -radius * 0.22, radius * 0.045, 0, Math.PI * 2);
+    ctx.arc(radius * 0.12, -radius * 0.22, radius * 0.045, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#e7c77f";
+    ctx.beginPath();
+    ctx.arc(0, radius * 0.48, radius * 0.12, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawWizardHat(radius) {
+    ctx.fillStyle = "#35244f";
+    ctx.strokeStyle = "#b695f0";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-radius * 0.56, -radius * 0.43);
+    ctx.lineTo(radius * 0.08, -radius * 1.38);
+    ctx.lineTo(radius * 0.58, -radius * 0.4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(0, -radius * 0.38, radius * 0.68, radius * 0.16, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+}
+
+function drawWizardStaff(radius) {
+    ctx.strokeStyle = "#d2ad78";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(radius * 0.78, radius * 0.86);
+    ctx.lineTo(radius * 0.94, -radius * 0.9);
+    ctx.stroke();
+    ctx.fillStyle = "#9ce9f5";
+    ctx.shadowColor = "#6bd9f1";
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(radius * 0.94, -radius, radius * 0.17, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+}
+
+function drawBatSprite(enemy) {
+    ctx.save();
+    ctx.translate(enemy.x, enemy.y);
+    const r = enemy.radius;
+    ctx.fillStyle = "#4a2946";
+    ctx.strokeStyle = "#d278a4";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.2, -r * 0.18);
+    ctx.quadraticCurveTo(-r * 0.85, -r * 0.85, -r, -r * 0.06);
+    ctx.lineTo(-r * 0.52, r * 0.34);
+    ctx.lineTo(-r * 0.12, r * 0.15);
+    ctx.moveTo(r * 0.2, -r * 0.18);
+    ctx.quadraticCurveTo(r * 0.85, -r * 0.85, r, -r * 0.06);
+    ctx.lineTo(r * 0.52, r * 0.34);
+    ctx.lineTo(r * 0.12, r * 0.15);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#24192f";
+    ctx.beginPath();
+    ctx.ellipse(0, 0, r * 0.34, r * 0.48, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#ff8ba4";
+    ctx.beginPath();
+    ctx.arc(-r * 0.13, -r * 0.08, r * 0.055, 0, Math.PI * 2);
+    ctx.arc(r * 0.13, -r * 0.08, r * 0.055, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}
+
+function drawSkeletonSprite(enemy) {
+    ctx.save();
+    ctx.translate(enemy.x, enemy.y);
+    const r = enemy.radius;
+    ctx.fillStyle = "#d7d0bc";
+    ctx.strokeStyle = "#f4e7c9";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(0, -r * 0.16, r * 0.62, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#302735";
+    ctx.beginPath();
+    ctx.ellipse(-r * 0.22, -r * 0.18, r * 0.13, r * 0.2, 0, 0, Math.PI * 2);
+    ctx.ellipse(r * 0.22, -r * 0.18, r * 0.13, r * 0.2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#b7ad99";
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.3, r * 0.57);
+    ctx.lineTo(r * 0.3, r * 0.57);
+    ctx.moveTo(-r * 0.22, r * 0.76);
+    ctx.lineTo(r * 0.22, r * 0.76);
+    ctx.stroke();
+    ctx.restore();
+}
+
+function drawGhostSprite(enemy) {
+    ctx.save();
+    ctx.translate(enemy.x, enemy.y);
+    const r = enemy.radius;
+    ctx.fillStyle = "#a9e8ef";
+    ctx.strokeStyle = "#d7fbff";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.62, r * 0.62);
+    ctx.lineTo(-r * 0.62, -r * 0.05);
+    ctx.quadraticCurveTo(-r * 0.62, -r * 0.78, 0, -r * 0.78);
+    ctx.quadraticCurveTo(r * 0.62, -r * 0.78, r * 0.62, -r * 0.05);
+    ctx.lineTo(r * 0.62, r * 0.62);
+    ctx.lineTo(r * 0.3, r * 0.38);
+    ctx.lineTo(0, r * 0.66);
+    ctx.lineTo(-r * 0.3, r * 0.38);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#294054";
+    ctx.beginPath();
+    ctx.ellipse(-r * 0.2, -r * 0.1, r * 0.07, r * 0.13, 0, 0, Math.PI * 2);
+    ctx.ellipse(r * 0.2, -r * 0.1, r * 0.07, r * 0.13, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}
+
+function drawBossSprite(enemy) {
+    ctx.save();
+    ctx.translate(enemy.x, enemy.y);
+    const r = enemy.radius;
+    ctx.fillStyle = "#5f263e";
+    ctx.strokeStyle = "#ff8796";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.56, -r * 0.42);
+    ctx.lineTo(-r * 0.82, -r * 1.08);
+    ctx.lineTo(-r * 0.12, -r * 0.68);
+    ctx.lineTo(r * 0.12, -r * 0.68);
+    ctx.lineTo(r * 0.82, -r * 1.08);
+    ctx.lineTo(r * 0.56, -r * 0.42);
+    ctx.quadraticCurveTo(r * 0.82, r * 0.84, 0, r * 0.82);
+    ctx.quadraticCurveTo(-r * 0.82, r * 0.84, -r * 0.56, -r * 0.42);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#ffcf87";
+    ctx.shadowColor = "#ff546f";
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.ellipse(-r * 0.23, -r * 0.12, r * 0.12, r * 0.08, 0, 0, Math.PI * 2);
+    ctx.ellipse(r * 0.23, -r * 0.12, r * 0.12, r * 0.08, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.restore();
+}
+
+function drawArenaBackground() {
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const background = ctx.createRadialGradient(
+        centerX,
+        centerY,
+        0,
+        centerX,
+        centerY,
+        Math.max(canvas.width, canvas.height) * 0.75
+    );
+    background.addColorStop(0, "#171326");
+    background.addColorStop(0.55, "#100e1a");
+    background.addColorStop(1, "#090812");
+    ctx.fillStyle = background;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = "rgba(190, 160, 255, 0.035)";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    const tileWidth = 112;
+    const tileHeight = 88;
+    for (
+        let row = 0, y = 0;
+        y < canvas.height + tileHeight;
+        row++, y += tileHeight
+    ) {
+        const offset = row % 2 === 0 ? 0 : tileWidth / 2;
+        for (
+            let x = -tileWidth + offset;
+            x < canvas.width + tileWidth;
+            x += tileWidth
+        ) {
+            ctx.moveTo(x + 5, y);
+            ctx.lineTo(x + tileWidth - 7, y);
+            ctx.lineTo(x + tileWidth, y + tileHeight * 0.22);
+            ctx.moveTo(x, y + tileHeight * 0.18);
+            ctx.lineTo(x, y + tileHeight - 8);
+        }
+    }
+    ctx.stroke();
+
+    ctx.strokeStyle = "rgba(201, 168, 255, 0.045)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 132, -0.15, 1.18);
+    ctx.arc(centerX, centerY, 132, 2.1, 3.2);
+    ctx.arc(centerX, centerY, 132, 4.1, 5.35);
+    ctx.arc(centerX, centerY, 208, 0.15, 1.05);
+    ctx.arc(centerX, centerY, 208, 2.2, 3.0);
+    ctx.arc(centerX, centerY, 208, 4.2, 5.25);
+    for (let index = 0; index < 8; index++) {
+        const angle = index * Math.PI / 4;
+        const innerRadius = 143;
+        const outerRadius = 157;
+        ctx.moveTo(
+            centerX + Math.cos(angle) * innerRadius,
+            centerY + Math.sin(angle) * innerRadius
+        );
+        ctx.lineTo(
+            centerX + Math.cos(angle) * outerRadius,
+            centerY + Math.sin(angle) * outerRadius
+        );
+    }
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(212, 187, 255, 0.13)";
+    for (let index = 0; index < 8; index++) {
+        const angle = index * Math.PI / 4;
+        ctx.beginPath();
+        ctx.arc(
+            centerX + Math.cos(angle) * 132,
+            centerY + Math.sin(angle) * 132,
+            2,
+            0,
+            Math.PI * 2
+        );
+        ctx.fill();
+    }
+}
+
+function drawEnemyAura(enemy) {
+    const colors = {
+        bat: "rgba(226, 95, 140, 0.18)",
+        skeleton: "rgba(236, 201, 140, 0.16)",
+        ghost: "rgba(118, 221, 242, 0.2)",
+        boss: "rgba(240, 65, 107, 0.28)"
+    };
+    const radius = enemy.radius * (enemy.type === "boss" ? 2 : 1.65);
+    const glow = ctx.createRadialGradient(
+        enemy.x,
+        enemy.y,
+        0,
+        enemy.x,
+        enemy.y,
+        radius
+    );
+    glow.addColorStop(0, colors[enemy.type]);
+    glow.addColorStop(1, "rgba(0, 0, 0, 0)");
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(enemy.x, enemy.y, radius, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawPlayerAura(player) {
+    const aura = ctx.createRadialGradient(
+        player.x,
+        player.y,
+        0,
+        player.x,
+        player.y,
+        player.radius * 3.2
+    );
+    aura.addColorStop(0, "rgba(180, 139, 255, 0.24)");
+    aura.addColorStop(0.45, "rgba(112, 77, 185, 0.1)");
+    aura.addColorStop(1, "rgba(112, 77, 185, 0)");
+    ctx.fillStyle = aura;
+    ctx.beginPath();
+    ctx.arc(player.x, player.y, player.radius * 3.2, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawArenaMotes(time) {
+    for (let index = 0; index < 34; index++) {
+        const seed = index * 97.31;
+        const drift = time * (8 + index % 5);
+        const x = (seed * 7.3 + drift) % canvas.width;
+        const y = (
+            (seed * 13.7 - drift * 0.45) % canvas.height +
+            canvas.height
+        ) % canvas.height;
+        const pulse = 0.35 + (Math.sin(time * 1.4 + seed) + 1) * 0.25;
+        const radius = index % 7 === 0 ? 1.8 : 1.1;
+        ctx.globalAlpha = pulse;
+        ctx.fillStyle = index % 5 === 0 ? "#b9a2ff" : "#8a789e";
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+}
+
 function drawGame() {
     ctx.clearRect(
         0,
@@ -392,17 +720,18 @@ function drawGame() {
         canvas.width,
         canvas.height
     );
-    ctx.fillStyle = "#0b0a12";
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+    drawArenaBackground();
+    drawArenaMotes(state.time);
     drawGems();
     drawProjectiles();
     drawOrbs();
     drawPulse(ctx, state.player);
+    if (state.player) {
+        drawPlayerAura(state.player);
+    }
+    for (const enemy of state.enemies) {
+        drawEnemyAura(enemy);
+    }
     drawEnemies();
     drawPlayer();
     drawDamageNumbers(ctx, state.texts);

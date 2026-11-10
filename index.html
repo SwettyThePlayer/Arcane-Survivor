@@ -19,48 +19,67 @@
     <p id="audio-warning" hidden></p>
     <!-- Main menu -->
     <div id="menu-screen" class="screen">
-        <div class="menu-content">
-            <h1>ARCANE SURVIVOR</h1>
+        <div class="menu-content menu-panel">
+            <div class="menu-seal" aria-hidden="true">
+                <span>✦</span>
+            </div>
+            <p class="eyebrow">THE LAST WARDEN</p>
+            <h1>ARCANE <span>SURVIVOR</span></h1>
 
-            <p class="subtitle">Survive the endless horde.</p>
+            <p class="subtitle">The night is endless. Your magic isn't.</p>
 
-            <p id="best-score">Best time: --</p>
-            <p id="high-score">High score: --</p>
+            <div class="record-grid">
+                <div class="record-card">
+                    <span class="record-label">BEST SURVIVAL</span>
+                    <p id="best-score">--:--</p>
+                </div>
+                <div class="record-card">
+                    <span class="record-label">SOULS BANISHED</span>
+                    <p id="high-score">--</p>
+                </div>
+            </div>
             <p id="storage-warning" hidden></p>
 
-            <button id="start-button">START GAME</button>
+            <button id="start-button" class="start-button">ENTER THE ARENA</button>
 
             <div class="controls">
-                <h2>CONTROLS</h2>
-                <p>WASD / Arrow Keys — Move</p>
-                <p>Weapon fires automatically</p>
-                <p>Survive as long as possible!</p>
+                <p class="controls-title">YOUR SPELLBOOK</p>
+                <div class="control-row">
+                    <span class="key-group">
+                        <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+                    </span>
+                    <span>or arrow keys to move</span>
+                </div>
+                <p class="controls-note">Your staff will target enemies automatically.</p>
             </div>
         </div>
     </div>
         <!-- In-game HUD -->
-    <div id="game-hud" hidden>
+    <p id="boss-warning" hidden></p>
 
-            <p id="boss-warning" hidden></p>
-
-        <div id="boss-hud" hidden>
-            <div class="boss-hud-header">
-                <span>👹 BOSS</span>
-                <span id="boss-hp-text">-- / --</span>
-            </div>
-            <div
-                id="boss-hp-bar"
-                class="boss-hp-bar"
-                role="progressbar"
-                aria-label="Boss health"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                aria-valuenow="100"
-            >
-                <div id="boss-hp-fill" class="boss-hp-fill"></div>
-            </div>
+    <div id="boss-hud" hidden>
+        <div class="boss-hud-header">
+            <span>👹 BOSS</span>
+            <span id="boss-hp-text">-- / --</span>
         </div>
+        <div
+            id="boss-hp-bar"
+            class="boss-hp-bar"
+            role="progressbar"
+            aria-label="Boss health"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="100"
+        >
+            <div id="boss-hp-fill" class="boss-hp-fill"></div>
+        </div>
+    </div>
 
+    <div id="game-hud" hidden>
+        <div class="hud-heading">
+            <span>FIELD STATUS</span>
+            <span class="hud-indicator" aria-hidden="true"></span>
+        </div>
         <div class="hp-container">
             <span class="hud-label">HP</span>
 

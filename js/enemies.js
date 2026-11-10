@@ -18,7 +18,6 @@ export function createEnemy(type, x, y, time) {
         vx: 0,
         vy: 0,
         type,
-        emoji: enemyConfig.emoji,
         radius: enemyConfig.radius,
         hp: maxHp,
         maxHp,

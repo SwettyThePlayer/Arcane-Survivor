@@ -182,11 +182,11 @@ export function setupUI(
 
 function updateRecordsDisplay() {
     elements.bestScore.textContent = records.bestTime > 0
-        ? `Best time: ${formatTime(records.bestTime)}`
-        : "Best time: --";
+        ? formatTime(records.bestTime)
+        : "--:--";
     elements.highScore.textContent = records.bestKills > 0
-        ? `High score: ${records.bestKills} kills`
-        : "High score: --";
+        ? String(records.bestKills)
+        : "--";
     elements.storageWarning.hidden = !storageWarning;
     if (storageWarning) {
         elements.storageWarning.textContent =
