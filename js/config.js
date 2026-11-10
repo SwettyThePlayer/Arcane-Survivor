@@ -119,6 +119,15 @@ export const CONFIG = {
         projSpeed: {
             multiplier: 1.15,
             maxStacks: 4
+        },
+
+        orbs: {
+            damage: 10,
+            hitInterval: 0.6,
+            radius: 6,
+            orbitRadius: 52,
+            orbitSpeed: 1.8,
+            maxStacks: 4
         }
     }
 };

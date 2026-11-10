@@ -21,7 +21,8 @@ export function createPlayer(canvas) {
             projectileRadius: CONFIG.weapon.projectileRadius,
             projectileLifetime: CONFIG.weapon.lifetime,
             projectileCount: CONFIG.weapon.projectileCount,
-            pierce: CONFIG.weapon.pierce
+            pierce: CONFIG.weapon.pierce,
+            orbs: 0
         }
     };
     return player;

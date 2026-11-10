@@ -118,6 +118,16 @@ export const UPGRADES = [
             player.stats.projectileSpeed *=
                 CONFIG.upgrades.projSpeed.multiplier;
         }
+    },
+    {
+        id: "orbs",
+        name: "Astral Orbs",
+        icon: "🪐",
+        description: "Gain an orbiting orb that damages nearby enemies.",
+        maxStacks: CONFIG.upgrades.orbs.maxStacks,
+        apply(player) {
+            player.stats.orbs++;
+        }
     }
 ];
 

@@ -25,7 +25,8 @@ export function createEnemy(type, x, y, time) {
         speed: enemyConfig.speed,
         damage: enemyConfig.damage,
         xp: enemyConfig.xp,
-        hitFlash: 0
+        hitFlash: 0,
+        orbHitTimer: 0
     };
 }
 

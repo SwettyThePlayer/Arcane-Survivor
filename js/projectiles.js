@@ -29,6 +29,53 @@ export function fireProjectiles(player, target, projectiles) {
     }
 }
 
+export function getOrbPositions(player, time) {
+    const count = player.stats.orbs;
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+        const angle =
+            time * CONFIG.upgrades.orbs.orbitSpeed +
+            (i / count) * Math.PI * 2;
+        positions.push({
+            x: player.x +
+                Math.cos(angle) * CONFIG.upgrades.orbs.orbitRadius,
+            y: player.y +
+                Math.sin(angle) * CONFIG.upgrades.orbs.orbitRadius,
+            radius: CONFIG.upgrades.orbs.radius
+        });
+    }
+    return positions;
+}
+
+export function updateOrbs(state, dt) {
+    const orbs = getOrbPositions(state.player, state.time);
+    if (orbs.length === 0) {
+        return [];
+    }
+
+    for (const enemy of state.enemies) {
+        if (enemy.hp <= 0) {
+            continue;
+        }
+        enemy.orbHitTimer = Math.max(0, enemy.orbHitTimer - dt);
+        if (enemy.orbHitTimer > 0) {
+            continue;
+        }
+        for (const orb of orbs) {
+            if (!circlesCollide(orb, enemy)) {
+                continue;
+            }
+            enemy.hp -= CONFIG.upgrades.orbs.damage;
+            enemy.orbHitTimer = CONFIG.upgrades.orbs.hitInterval;
+            break;
+        }
+    }
+
+    const killedEnemies = state.enemies.filter(enemy => enemy.hp <= 0);
+    state.enemies = state.enemies.filter(enemy => enemy.hp > 0);
+    return killedEnemies;
+}
+
 export function updateProjectiles(state, dt) {
     for (let i = state.projectiles.length - 1; i >= 0; i--) {
         const projectile = state.projectiles[i];

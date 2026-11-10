@@ -14,7 +14,9 @@ import { updateEnemies } from "./enemies.js";
 
 import {
     fireProjectiles,
-    updateProjectiles
+    updateProjectiles,
+    updateOrbs,
+    getOrbPositions
 } from "./projectiles.js";
 
 import {
@@ -188,6 +190,7 @@ function updateGame(dt) {
         );
     }
     const killedEnemies = updateProjectiles(state, dt);
+    killedEnemies.push(...updateOrbs(state, dt));
     for (const enemy of killedEnemies) {
         state.kills++;
 
@@ -254,6 +257,18 @@ function drawProjectiles() {
     }
 }
 
+function drawOrbs() {
+    if (!state.player) {
+        return;
+    }
+    ctx.fillStyle = "#72e5ff";
+    for (const orb of getOrbPositions(state.player, state.time)) {
+        ctx.beginPath();
+        ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
 function drawEnemies() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -300,6 +315,7 @@ function drawGame() {
     );
     drawGems();
     drawProjectiles();
+    drawOrbs();
     drawEnemies();
     drawPlayer();
 }
