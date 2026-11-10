@@ -77,7 +77,16 @@ export const CONFIG = {
         damageTextDuration: 0.55,
         damageTextRiseSpeed: 35,
         playerDamageFlashDuration: 0.2,
-        lowHealthThreshold: 0.25
+        lowHealthThreshold: 0.25,
+        hitParticleCount: 3,
+        killParticleCount: 12,
+        particleSpeedMin: 35,
+        particleSpeedMax: 115,
+        particleLife: 0.42,
+        particleRadius: 2.5,
+        particleGravity: 24,
+        screenShakeDuration: 0.18,
+        screenShakeIntensity: 4
     },
     audio: {
         volume: 0.08,

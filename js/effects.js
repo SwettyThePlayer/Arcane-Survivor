@@ -1,8 +1,45 @@
 import { CONFIG } from "./config.js";
-import { distanceSquared } from "./utils.js";
+import { distanceSquared, randomRange } from "./utils.js";
+
+const ENEMY_COLORS = {
+    bat: "#ff9ab9",
+    skeleton: "#f4e7c9",
+    ghost: "#a9e8ef",
+    boss: "#ff6478"
+};
+
+function addParticles(state, x, y, color, count) {
+    for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = randomRange(
+            CONFIG.effects.particleSpeedMin,
+            CONFIG.effects.particleSpeedMax
+        );
+        state.particles.push({
+            x,
+            y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: randomRange(
+                CONFIG.effects.particleRadius * 0.6,
+                CONFIG.effects.particleRadius
+            ),
+            color,
+            life: CONFIG.effects.particleLife,
+            maxLife: CONFIG.effects.particleLife
+        });
+    }
+}
 
 export function recordDamage(state, enemy, damage) {
     enemy.hitFlash = CONFIG.effects.hitFlashDuration;
+    addParticles(
+        state,
+        enemy.x,
+        enemy.y,
+        ENEMY_COLORS[enemy.type],
+        CONFIG.effects.hitParticleCount
+    );
     state.texts.push({
         x: enemy.x,
         y: enemy.y - enemy.radius,
@@ -13,6 +50,7 @@ export function recordDamage(state, enemy, damage) {
 
 export function recordPlayerDamage(state, player, damage) {
     player.damageFlash = CONFIG.effects.playerDamageFlashDuration;
+    state.shake = CONFIG.effects.screenShakeDuration;
     state.texts.push({
         x: player.x,
         y: player.y - player.radius,
@@ -20,6 +58,16 @@ export function recordPlayerDamage(state, player, damage) {
         color: "#ff6478",
         life: CONFIG.effects.damageTextDuration
     });
+}
+
+export function recordEnemyDefeat(state, enemy) {
+    addParticles(
+        state,
+        enemy.x,
+        enemy.y,
+        ENEMY_COLORS[enemy.type],
+        CONFIG.effects.killParticleCount
+    );
 }
 
 export function updateCombatEffects(state, dt) {
@@ -32,11 +80,38 @@ export function updateCombatEffects(state, dt) {
     for (const enemy of state.enemies) {
         enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);
     }
+    for (const particle of state.particles) {
+        particle.life -= dt;
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+        particle.vy += CONFIG.effects.particleGravity * dt;
+    }
+    state.particles = state.particles.filter(
+        particle => particle.life > 0
+    );
+    state.shake = Math.max(0, state.shake - dt);
     for (const text of state.texts) {
         text.life -= dt;
         text.y -= CONFIG.effects.damageTextRiseSpeed * dt;
     }
     state.texts = state.texts.filter(text => text.life > 0);
+}
+
+export function drawParticles(ctx, particles) {
+    for (const particle of particles) {
+        ctx.globalAlpha = particle.life / particle.maxLife;
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(
+            particle.x,
+            particle.y,
+            particle.radius,
+            0,
+            Math.PI * 2
+        );
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
 }
 
 export function drawDamageNumbers(ctx, texts) {

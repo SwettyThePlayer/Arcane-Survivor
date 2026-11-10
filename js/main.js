@@ -19,8 +19,10 @@ import {
 import { updateEnemies } from "./enemies.js";
 import {
     drawPulse,
+    drawParticles,
     updatePulse,
     recordPlayerDamage,
+    recordEnemyDefeat,
     updateCombatEffects,
     drawDamageNumbers
 } from "./effects.js";
@@ -52,6 +54,9 @@ import {
 import { clamp, circlesCollide } from "./utils.js";
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
+const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+).matches;
 const audio = createAudioState();
 audio.onWarning = warning => {
     updateAudioStatus(audio.muted, warning);
@@ -264,7 +269,7 @@ function updateGame(dt) {
     updateCombatEffects(state, dt);
     for (const enemy of killedEnemies) {
         state.kills++;
-
+        recordEnemyDefeat(state, enemy);
         dropGem(state, enemy);
     }
     const collectedGems = updateGems(state, dt);
@@ -736,6 +741,17 @@ function drawGame() {
         canvas.width,
         canvas.height
     );
+    ctx.save();
+    if (state.shake > 0 && !reduceMotion) {
+        const shakeProgress = state.shake /
+            CONFIG.effects.screenShakeDuration;
+        const intensity =
+            CONFIG.effects.screenShakeIntensity * shakeProgress;
+        ctx.translate(
+            (Math.random() * 2 - 1) * intensity,
+            (Math.random() * 2 - 1) * intensity
+        );
+    }
     drawArenaBackground();
     drawArenaMotes(state.time);
     drawGems();
@@ -750,7 +766,9 @@ function drawGame() {
     }
     drawEnemies();
     drawPlayer();
+    drawParticles(ctx, state.particles);
     drawDamageNumbers(ctx, state.texts);
+    ctx.restore();
 }
 
 function gameLoop(now) {
