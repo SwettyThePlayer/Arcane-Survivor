@@ -109,6 +109,16 @@ export const CONFIG = {
         multishot: {
             increase: 1,
             maxStacks: 4
+        },
+
+        pierce: {
+            increase: 1,
+            maxStacks: 3
+        },
+
+        projSpeed: {
+            multiplier: 1.15,
+            maxStacks: 4
         }
     }
 };

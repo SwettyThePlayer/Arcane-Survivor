@@ -90,6 +90,34 @@ export const UPGRADES = [
             player.stats.projectileCount +=
                 CONFIG.upgrades.multishot.increase;
         }
+    },
+    {
+        id: "pierce",
+        name: "Piercing Bolts",
+        icon: "🗡️",
+        description: `Projectiles pierce ${
+            CONFIG.upgrades.pierce.increase
+        } additional enemy per stack.`,
+        maxStacks: CONFIG.upgrades.pierce.maxStacks,
+        apply(player) {
+            player.stats.pierce +=
+                CONFIG.upgrades.pierce.increase;
+        }
+    },
+    {
+        id: "projSpeed",
+        name: "Swift Bolts",
+        icon: "💫",
+        description: `Increase projectile speed by ${
+            Math.round(
+                (CONFIG.upgrades.projSpeed.multiplier - 1) * 100
+            )
+        }%.`,
+        maxStacks: CONFIG.upgrades.projSpeed.maxStacks,
+        apply(player) {
+            player.stats.projectileSpeed *=
+                CONFIG.upgrades.projSpeed.multiplier;
+        }
     }
 ];
 
