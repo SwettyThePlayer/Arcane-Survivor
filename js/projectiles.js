@@ -48,7 +48,7 @@ export function getOrbPositions(player, time) {
     return positions;
 }
 
-export function updateOrbs(state, dt) {
+export function updateOrbs(state, dt, onHit = null) {
     const orbs = getOrbPositions(state.player, state.time);
     if (orbs.length === 0) {
         return [];
@@ -68,6 +68,9 @@ export function updateOrbs(state, dt) {
             }
             enemy.hp -= CONFIG.upgrades.orbs.damage;
             recordDamage(state, enemy, CONFIG.upgrades.orbs.damage);
+            if (onHit) {
+                onHit();
+            }
             enemy.orbHitTimer = CONFIG.upgrades.orbs.hitInterval;
             break;
         }
@@ -78,7 +81,7 @@ export function updateOrbs(state, dt) {
     return killedEnemies;
 }
 
-export function updateProjectiles(state, dt) {
+export function updateProjectiles(state, dt, onHit = null) {
     for (let i = state.projectiles.length - 1; i >= 0; i--) {
         const projectile = state.projectiles[i];
         projectile.x += projectile.vx * dt;
@@ -101,6 +104,9 @@ export function updateProjectiles(state, dt) {
             }
             enemy.hp -= projectile.damage;
             recordDamage(state, enemy, projectile.damage);
+            if (onHit) {
+                onHit();
+            }
             projectile.hitIds.add(enemy);
             if (projectile.pierceLeft <= 0) {
                 removeProjectile = true;

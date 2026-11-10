@@ -62,7 +62,7 @@ function getPulseRadius(stacks) {
         (stacks - 1) * CONFIG.upgrades.pulse.radiusPerStack;
 }
 
-function damageEnemiesInPulse(state, radius, damage) {
+function damageEnemiesInPulse(state, radius, damage, onHit = null) {
     for (const enemy of state.enemies) {
         if (enemy.hp <= 0) {
             continue;
@@ -77,6 +77,9 @@ function damageEnemiesInPulse(state, radius, damage) {
         if (distance <= hitRadius * hitRadius) {
             enemy.hp -= damage;
             recordDamage(state, enemy, damage);
+            if (onHit) {
+                onHit();
+            }
         }
     }
 
@@ -85,7 +88,7 @@ function damageEnemiesInPulse(state, radius, damage) {
     return killedEnemies;
 }
 
-export function updatePulse(state, dt) {
+export function updatePulse(state, dt, onHit = null) {
     const player = state.player;
     if (player.stats.pulse === 0) {
         return [];
@@ -107,7 +110,8 @@ export function updatePulse(state, dt) {
     return damageEnemiesInPulse(
         state,
         getPulseRadius(player.stats.pulse),
-        damage
+        damage,
+        onHit
     );
 }
 

@@ -26,7 +26,9 @@ const elements = {
     bossHud: document.getElementById("boss-hud"),
     bossHpFill: document.getElementById("boss-hp-fill"),
     bossHpBar: document.getElementById("boss-hp-bar"),
-    bossHpText: document.getElementById("boss-hp-text")
+    bossHpText: document.getElementById("boss-hp-text"),
+    muteButton: document.getElementById("mute-button"),
+    audioWarning: document.getElementById("audio-warning")
 };
 
 let activeChoices = [];
@@ -147,17 +149,35 @@ function createUpgradeCard(choice, index) {
     return card;
 }
 
-export function setupUI(onStart, onReturnToMenu) {
+export function updateAudioStatus(muted, warning = "") {
+    elements.muteButton.textContent = muted ? "SOUND OFF" : "SOUND ON";
+    elements.muteButton.setAttribute("aria-pressed", String(muted));
+    elements.muteButton.setAttribute("aria-label", "Toggle sound");
+    elements.audioWarning.hidden = !warning;
+    elements.audioWarning.textContent = warning;
+}
+
+export function setupUI(
+    onStart,
+    onReturnToMenu,
+    onToggleMute,
+    muted,
+    audioWarning
+) {
     elements.startButton.addEventListener("click", () => {
         onStart();
     });
     elements.restartButton.addEventListener("click", () => {
         onReturnToMenu();
     });
+    elements.muteButton.addEventListener("click", () => {
+        onToggleMute();
+    });
     window.addEventListener(
         "keydown",
         handleLevelUpKeyDown
     );
+    updateAudioStatus(muted, audioWarning);
 }
 
 function updateRecordsDisplay() {

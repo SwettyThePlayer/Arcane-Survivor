@@ -19,6 +19,7 @@ export function updateGems(state, dt) {
     const collectionRadiusSquared =
         collectionRadius * collectionRadius;
     const remainingGems = [];
+    let collectedCount = 0;
     for (const gem of state.gems) {
         let distance = distanceSquared(
             player.x,
@@ -28,6 +29,7 @@ export function updateGems(state, dt) {
         );
         if (distance <= collectionRadiusSquared) {
             player.xp += gem.value;
+            collectedCount++;
             continue;
         }
         if (distance <= pickupRangeSquared) {
@@ -46,10 +48,12 @@ export function updateGems(state, dt) {
 
             if (distance <= collectionRadiusSquared) {
                 player.xp += gem.value;
+                collectedCount++;
                 continue;
             }
         }
         remainingGems.push(gem);
     }
     state.gems = remainingGems;
+    return collectedCount;
 }

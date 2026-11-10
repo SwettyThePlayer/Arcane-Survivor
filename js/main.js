@@ -1,4 +1,10 @@
 import { CONFIG } from "./config.js";
+import {
+    createAudioState,
+    initializeAudio,
+    playSound,
+    setMuted
+} from "./audio.js";
 
 import { setupInput } from "./input.js";
 
@@ -32,7 +38,8 @@ import {
     showHUD,
     updateHUD,
     showGameOver,
-    showLevelUp
+    showLevelUp,
+    updateAudioStatus
 } from "./ui.js";
 
 import {
@@ -44,6 +51,10 @@ import {
 import { clamp, circlesCollide } from "./utils.js";
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
+const audio = createAudioState();
+audio.onWarning = warning => {
+    updateAudioStatus(audio.muted, warning);
+};
 const state = {
     mode: "MENU",
     player: null,
@@ -60,7 +71,7 @@ const state = {
     shake: 0,
     pendingLevelUps: 0,
     upgradeStacks: {},
-    muted: false,
+    muted: audio.muted,
     keys: null
 };
 
@@ -123,6 +134,7 @@ function updateRunHUD() {
 
 function presentNextLevelUp() {
     const choices = getRandomUpgrades(state);
+    playSound(audio, "levelUp");
     showLevelUp(choices, handleUpgradeSelection);
 }
 
@@ -144,6 +156,9 @@ function handleUpgradeSelection(choice) {
 }
 
 function startGame() {
+    initializeAudio(audio);
+    state.muted = audio.muted;
+    updateAudioStatus(audio.muted, audio.warning);
     resetRun();
     state.mode = "PLAYING";
     showHUD();
@@ -179,6 +194,7 @@ function handlePlayerCollision() {
         player.hp = Math.max(0, player.hp - damageTaken);
         player.invulnTimer = CONFIG.player.invulnTime;
         recordPlayerDamage(state, player, damageTaken);
+        playSound(audio, "hit");
         break;
     }
 }
@@ -213,22 +229,38 @@ function updateGame(dt) {
             target,
             state.projectiles
         );
+        playSound(audio, "shoot");
     }
-    const killedEnemies = updateProjectiles(state, dt);
-    killedEnemies.push(...updateOrbs(state, dt));
-    killedEnemies.push(...updatePulse(state, dt));
+    let enemyHitThisFrame = false;
+    const recordEnemyHit = () => {
+        enemyHitThisFrame = true;
+    };
+    const killedEnemies = updateProjectiles(
+        state,
+        dt,
+        recordEnemyHit
+    );
+    killedEnemies.push(...updateOrbs(state, dt, recordEnemyHit));
+    killedEnemies.push(...updatePulse(state, dt, recordEnemyHit));
+    if (enemyHitThisFrame) {
+        playSound(audio, "hit");
+    }
     updateCombatEffects(state, dt);
     for (const enemy of killedEnemies) {
         state.kills++;
 
         dropGem(state, enemy);
     }
-    updateGems(state, dt);
+    const collectedGems = updateGems(state, dt);
+    if (collectedGems > 0) {
+        playSound(audio, "pickup");
+    }
     processLevelUps();
     handlePlayerCollision();
     updateRunHUD();
     if (state.player.hp <= 0) {
         state.mode = "GAME_OVER";
+        playSound(audio, "death");
         showGameOver(
             state.time,
             state.kills
@@ -414,7 +446,17 @@ window.addEventListener("resize", resizeCanvas);
 setupInput(state);
 setupUI(
     startGame,
-    returnToMenu
+    returnToMenu,
+    () => {
+        setMuted(audio, !audio.muted);
+        state.muted = audio.muted;
+        updateAudioStatus(audio.muted, audio.warning);
+        if (!audio.muted) {
+            initializeAudio(audio);
+        }
+    },
+    audio.muted,
+    audio.warning
 );
 
 window.addEventListener(

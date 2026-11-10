@@ -83,6 +83,23 @@ export const CONFIG = {
         damageTextRiseSpeed: 35,
         playerDamageFlashDuration: 0.2
     },
+    audio: {
+        volume: 0.08,
+        sounds: {
+            shoot: { frequency: 660, duration: 0.06, wave: "triangle" },
+            hit: { frequency: 210, duration: 0.08, wave: "square" },
+            pickup: { frequency: 880, duration: 0.12, wave: "sine" },
+            levelUp: { frequency: 1040, duration: 0.24, wave: "sine" },
+            death: { frequency: 140, duration: 0.42, wave: "triangle" }
+        },
+        cooldowns: {
+            shoot: 0.05,
+            hit: 0.08,
+            pickup: 0.08,
+            levelUp: 0.2,
+            death: 0.5
+        }
+    },
     upgrades: {
         choicesPerLevel: 3,
         fallbackHealPercent: 0.30,

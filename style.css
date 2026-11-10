@@ -47,6 +47,36 @@ body {
     background: var(--background);
 }
 
+.mute-button {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 20;
+
+    width: auto;
+    padding: 9px 12px;
+
+    background: rgba(21, 19, 33, 0.92);
+    border-color: var(--panel-border);
+    font-size: 11px;
+}
+
+#audio-warning {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 20;
+
+    max-width: 320px;
+    padding: 9px 12px;
+
+    background: rgba(21, 19, 33, 0.95);
+    border: 1px solid var(--red);
+    border-radius: 6px;
+    color: #ff8291;
+    font-size: 12px;
+}
+
 .screen {
     position: fixed;
     inset: 0;
