@@ -67,7 +67,8 @@ export const CONFIG = {
         intervalDecayPerSec: 0.004,
         hpScalePerMinute: 0.25,
         maxEnemies: 250,
-        bossEveryMinutes: 3
+        bossEveryMinutes: 3,
+        bossWarningDuration: 10
     },
 
     xp: {

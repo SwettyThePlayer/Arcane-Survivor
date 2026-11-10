@@ -171,6 +171,20 @@ button:focus-visible {
     width: 250px;
 }
 
+#boss-warning {
+    position: fixed;
+    top: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    color: #ff8291;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-align: center;
+    text-shadow: 0 0 18px rgba(224, 82, 101, 0.8);
+}
+
 .hp-container {
     display: flex;
     align-items: center;

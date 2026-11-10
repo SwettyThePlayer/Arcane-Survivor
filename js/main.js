@@ -49,6 +49,8 @@ const state = {
     time: 0,
     kills: 0,
     spawnTimer: 0,
+    nextBossTime: 0,
+    bossWarningSeconds: 0,
     shake: 0,
     pendingLevelUps: 0,
     upgradeStacks: {},
@@ -94,6 +96,8 @@ function resetRun() {
     state.time = 0;
     state.kills = 0;
     state.spawnTimer = CONFIG.spawn.startInterval;
+    state.nextBossTime = CONFIG.spawn.bossEveryMinutes * 60;
+    state.bossWarningSeconds = 0;
     state.shake = 0;
     state.upgradeStacks = {};
     state.pendingLevelUps = 0;
@@ -111,21 +115,36 @@ function handleUpgradeSelection(choice) {
         applyUpgrade(state, choice);
     }
     state.pendingLevelUps--;
-    updateHUD(state.player, state.time, state.kills);
+    updateHUD(
+        state.player,
+        state.time,
+        state.kills,
+        state.bossWarningSeconds
+    );
     if (state.pendingLevelUps > 0) {
         presentNextLevelUp();
         return;
     }
     state.mode = "PLAYING";
     showHUD();
-    updateHUD(state.player, state.time, state.kills);
+    updateHUD(
+        state.player,
+        state.time,
+        state.kills,
+        state.bossWarningSeconds
+    );
 }
 
 function startGame() {
     resetRun();
     state.mode = "PLAYING";
     showHUD();
-    updateHUD(state.player, state.time, state.kills);
+    updateHUD(
+        state.player,
+        state.time,
+        state.kills,
+        state.bossWarningSeconds
+    );
 }
 
 function returnToMenu() {
@@ -201,7 +220,12 @@ function updateGame(dt) {
     updateGems(state, dt);
     processLevelUps();
     handlePlayerCollision();
-    updateHUD(state.player, state.time, state.kills);
+    updateHUD(
+        state.player,
+        state.time,
+        state.kills,
+        state.bossWarningSeconds
+    );
     if (state.player.hp <= 0) {
         state.mode = "GAME_OVER";
         showGameOver(

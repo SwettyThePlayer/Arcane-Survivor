@@ -73,7 +73,46 @@ function spawnEnemy(state, canvas) {
     state.enemies.push(enemy);
 }
 
+function spawnBoss(state, canvas) {
+    const radius = CONFIG.enemies.boss.radius;
+    const edge = Math.floor(Math.random() * 4);
+    let x;
+    let y;
+    if (edge === 0) {
+        x = randomRange(0, canvas.width);
+        y = -radius;
+    }
+    else if (edge === 1) {
+        x = randomRange(0, canvas.width);
+        y = canvas.height + radius;
+    }
+    else if (edge === 2) {
+        x = -radius;
+        y = randomRange(0, canvas.height);
+    }
+    else {
+        x = canvas.width + radius;
+        y = randomRange(0, canvas.height);
+    }
+    state.enemies.push(createEnemy("boss", x, y, state.time));
+}
+
+export function updateBossSpawning(state, canvas) {
+    const warningDuration = CONFIG.spawn.bossWarningDuration;
+    if (state.time >= state.nextBossTime) {
+        spawnBoss(state, canvas);
+        state.nextBossTime += CONFIG.spawn.bossEveryMinutes * 60;
+        state.bossWarningSeconds = 0;
+        return;
+    }
+    const warningStartsAt = state.nextBossTime - warningDuration;
+    state.bossWarningSeconds = state.time >= warningStartsAt
+        ? state.nextBossTime - state.time
+        : 0;
+}
+
 export function updateEnemies(state, dt, canvas) {
+    updateBossSpawning(state, canvas);
     state.spawnTimer -= dt;
 
     if (state.spawnTimer <= 0) {

@@ -19,7 +19,8 @@ const elements = {
     levelUpMessage: document.getElementById("level-up-message"),
     upgradeCards: document.getElementById("upgrade-cards"),
     timeText: document.getElementById("time-text"),
-    killsText: document.getElementById("kills-text")
+    killsText: document.getElementById("kills-text"),
+    bossWarning: document.getElementById("boss-warning")
 };
 
 let activeChoices = [];
@@ -146,7 +147,12 @@ export function showHUD() {
     elements.levelUpScreen.hidden = true;
 }
 
-export function updateHUD(player, time = 0, kills = 0) {
+export function updateHUD(
+    player,
+    time = 0,
+    kills = 0,
+    bossWarningSeconds = 0
+) {
     const hpPercentage = Math.max(
         0,
         Math.min(100, (player.hp / player.maxHp) * 100)
@@ -167,6 +173,11 @@ export function updateHUD(player, time = 0, kills = 0) {
         `${xpPercentage}%`;
     elements.timeText.textContent = formatTime(time);
     elements.killsText.textContent = String(kills);
+    elements.bossWarning.hidden = bossWarningSeconds <= 0;
+    if (bossWarningSeconds > 0) {
+        elements.bossWarning.textContent =
+            `BOSS APPROACHING — ${Math.ceil(bossWarningSeconds)}s`;
+    }
 }
 
 export function showLevelUp(upgrades, onSelect) {
