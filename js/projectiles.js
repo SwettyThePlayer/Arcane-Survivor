@@ -1,4 +1,5 @@
 import { circlesCollide } from "./utils.js";
+import { CONFIG } from "./config.js";
 
 export function fireProjectiles(player, target, projectiles) {
     const count = player.stats.projectileCount;
@@ -6,7 +7,7 @@ export function fireProjectiles(player, target, projectiles) {
         target.y - player.y,
         target.x - player.x
     );
-    const spreadAngle = 0;
+    const spreadAngle = CONFIG.weapon.spreadAngle;
     for (let i = 0; i < count; i++) {
         let angle = baseAngle;
         if (count > 1) {

@@ -15,6 +15,7 @@ export const CONFIG = {
         projectileRadius: 6,
         lifetime: 1.5,
         projectileCount: 1,
+        spreadAngle: 0.35,
         pierce: 0
     },
 
