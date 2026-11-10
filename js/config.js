@@ -126,7 +126,16 @@ export const CONFIG = {
             hitInterval: 0.6,
             radius: 6,
             orbitRadius: 52,
-            orbitSpeed: 1.8,
+            orbitSpeed: 3,
+            maxStacks: 4
+        },
+
+        pulse: {
+            damagePerStack: 25,
+            radius: 110,
+            radiusPerStack: 15,
+            interval: 8,
+            effectDuration: 0.35,
             maxStacks: 4
         }
     }

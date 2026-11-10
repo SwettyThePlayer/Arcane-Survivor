@@ -12,6 +12,8 @@ export function createPlayer(canvas) {
         pickupRange: CONFIG.player.pickupRange,
         level: 1,
         xp: 0,
+        pulseTimer: 0,
+        pulseEffectTimer: 0,
         fireTimer: 0,
         invulnTimer: 0,
         stats: {
@@ -22,7 +24,8 @@ export function createPlayer(canvas) {
             projectileLifetime: CONFIG.weapon.lifetime,
             projectileCount: CONFIG.weapon.projectileCount,
             pierce: CONFIG.weapon.pierce,
-            orbs: 0
+            orbs: 0,
+            pulse: 0
         }
     };
     return player;

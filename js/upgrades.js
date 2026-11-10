@@ -128,6 +128,21 @@ export const UPGRADES = [
         apply(player) {
             player.stats.orbs++;
         }
+    },
+    {
+        id: "pulse",
+        name: "Arcane Pulse",
+        icon: "💠",
+        description: `Unleash a damaging blast around yourself every ${
+            CONFIG.upgrades.pulse.interval
+        } seconds. Each stack increases its power and reach.`,
+        maxStacks: CONFIG.upgrades.pulse.maxStacks,
+        apply(player) {
+            if (player.stats.pulse === 0) {
+                player.pulseTimer = CONFIG.upgrades.pulse.interval;
+            }
+            player.stats.pulse++;
+        }
     }
 ];
 

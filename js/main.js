@@ -11,6 +11,7 @@ import {
 } from "./player.js";
 
 import { updateEnemies } from "./enemies.js";
+import { drawPulse, updatePulse } from "./effects.js";
 
 import {
     fireProjectiles,
@@ -191,6 +192,7 @@ function updateGame(dt) {
     }
     const killedEnemies = updateProjectiles(state, dt);
     killedEnemies.push(...updateOrbs(state, dt));
+    killedEnemies.push(...updatePulse(state, dt));
     for (const enemy of killedEnemies) {
         state.kills++;
 
@@ -316,6 +318,7 @@ function drawGame() {
     drawGems();
     drawProjectiles();
     drawOrbs();
+    drawPulse(ctx, state.player);
     drawEnemies();
     drawPlayer();
 }
