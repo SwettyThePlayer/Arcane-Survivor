@@ -77,6 +77,11 @@ export const CONFIG = {
             return 5 + level * 5;
         }
     },
+    effects: {
+        hitFlashDuration: 0.12,
+        damageTextDuration: 0.55,
+        damageTextRiseSpeed: 35
+    },
     upgrades: {
         choicesPerLevel: 3,
         fallbackHealPercent: 0.30,

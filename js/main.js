@@ -11,7 +11,13 @@ import {
 } from "./player.js";
 
 import { updateEnemies } from "./enemies.js";
-import { drawPulse, updatePulse } from "./effects.js";
+import {
+    drawPulse,
+    updatePulse,
+    recordDamage,
+    updateCombatEffects,
+    drawDamageNumbers
+} from "./effects.js";
 
 import {
     fireProjectiles,
@@ -174,6 +180,7 @@ function handlePlayerCollision() {
         }
         player.hp = Math.max(0, player.hp - enemy.damage);
         player.invulnTimer = CONFIG.player.invulnTime;
+        recordDamage(state, enemy, enemy.damage);
         break;
     }
 }
@@ -212,6 +219,7 @@ function updateGame(dt) {
     const killedEnemies = updateProjectiles(state, dt);
     killedEnemies.push(...updateOrbs(state, dt));
     killedEnemies.push(...updatePulse(state, dt));
+    updateCombatEffects(state, dt);
     for (const enemy of killedEnemies) {
         state.kills++;
 
@@ -301,12 +309,18 @@ function drawEnemies() {
 
     for (const enemy of state.enemies) {
         ctx.font = `${enemy.radius * 2}px serif`;
+        if (enemy.hitFlash > 0) {
+            ctx.shadowColor = "#fff2c2";
+            ctx.shadowBlur = 18;
+        }
         ctx.fillText(
             enemy.emoji,
             enemy.x,
             enemy.y
         );
+        ctx.shadowBlur = 0;
     }
+    drawDamageNumbers(ctx, state.texts);
 }
 
 function drawPlayer() {

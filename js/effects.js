@@ -1,6 +1,45 @@
 import { CONFIG } from "./config.js";
 import { distanceSquared } from "./utils.js";
 
+export function recordDamage(state, enemy, damage) {
+    enemy.hitFlash = CONFIG.effects.hitFlashDuration;
+    state.texts.push({
+        x: enemy.x,
+        y: enemy.y - enemy.radius,
+        value: Math.round(damage),
+        life: CONFIG.effects.damageTextDuration
+    });
+}
+
+export function updateCombatEffects(state, dt) {
+    for (const enemy of state.enemies) {
+        enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);
+    }
+    for (const text of state.texts) {
+        text.life -= dt;
+        text.y -= CONFIG.effects.damageTextRiseSpeed * dt;
+    }
+    state.texts = state.texts.filter(text => text.life > 0);
+}
+
+export function drawDamageNumbers(ctx, texts) {
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "bold 16px Arial, sans-serif";
+    ctx.lineWidth = 3;
+    for (const text of texts) {
+        ctx.globalAlpha = Math.min(
+            1,
+            text.life / CONFIG.effects.damageTextDuration
+        );
+        ctx.strokeStyle = "#24192f";
+        ctx.fillStyle = "#ffe5a8";
+        ctx.strokeText(String(text.value), text.x, text.y);
+        ctx.fillText(String(text.value), text.x, text.y);
+    }
+    ctx.globalAlpha = 1;
+}
+
 function getPulseRadius(stacks) {
     return CONFIG.upgrades.pulse.radius +
         (stacks - 1) * CONFIG.upgrades.pulse.radiusPerStack;
@@ -20,6 +59,7 @@ function damageEnemiesInPulse(state, radius, damage) {
         const hitRadius = radius + enemy.radius;
         if (distance <= hitRadius * hitRadius) {
             enemy.hp -= damage;
+            recordDamage(state, enemy, damage);
         }
     }
 

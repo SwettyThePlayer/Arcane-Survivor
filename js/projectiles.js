@@ -1,5 +1,6 @@
 import { circlesCollide } from "./utils.js";
 import { CONFIG } from "./config.js";
+import { recordDamage } from "./effects.js";
 
 export function fireProjectiles(player, target, projectiles) {
     const count = player.stats.projectileCount;
@@ -66,6 +67,7 @@ export function updateOrbs(state, dt) {
                 continue;
             }
             enemy.hp -= CONFIG.upgrades.orbs.damage;
+            recordDamage(state, enemy, CONFIG.upgrades.orbs.damage);
             enemy.orbHitTimer = CONFIG.upgrades.orbs.hitInterval;
             break;
         }
@@ -98,6 +100,7 @@ export function updateProjectiles(state, dt) {
                 continue;
             }
             enemy.hp -= projectile.damage;
+            recordDamage(state, enemy, projectile.damage);
             projectile.hitIds.add(enemy);
             if (projectile.pierceLeft <= 0) {
                 removeProjectile = true;
