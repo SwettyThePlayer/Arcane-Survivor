@@ -17,7 +17,9 @@ const elements = {
     finalKills: document.getElementById("final-kills"),
     newRecord: document.getElementById("new-record"),
     levelUpMessage: document.getElementById("level-up-message"),
-    upgradeCards: document.getElementById("upgrade-cards")
+    upgradeCards: document.getElementById("upgrade-cards"),
+    timeText: document.getElementById("time-text"),
+    killsText: document.getElementById("kills-text")
 };
 
 let activeChoices = [];
@@ -139,7 +141,7 @@ export function showHUD() {
     elements.levelUpScreen.hidden = true;
 }
 
-export function updateHUD(player) {
+export function updateHUD(player, time = 0, kills = 0) {
     const hpPercentage = Math.max(
         0,
         Math.min(100, (player.hp / player.maxHp) * 100)
@@ -158,6 +160,8 @@ export function updateHUD(player) {
         `${player.xp} / ${xpNeeded} XP`;
     elements.xpFill.style.width =
         `${xpPercentage}%`;
+    elements.timeText.textContent = formatTime(time);
+    elements.killsText.textContent = String(kills);
 }
 
 export function showLevelUp(upgrades, onSelect) {

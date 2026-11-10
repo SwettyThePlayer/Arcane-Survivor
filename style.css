@@ -382,6 +382,45 @@ button:focus-visible {
     font-weight: bold;
 }
 
+/* ==============================
+   RUN STATISTICS
+================================ */
+
+.run-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+
+    margin-top: 8px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    padding: 10px 12px;
+
+    background: rgba(21, 19, 33, 0.9);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+}
+
+#time-text,
+#kills-text {
+    color: var(--purple-light);
+    font-size: 17px;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+}
+
 @media (max-width: 700px) {
 
     .level-up-content {

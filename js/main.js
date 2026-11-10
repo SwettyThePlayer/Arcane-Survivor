@@ -108,21 +108,21 @@ function handleUpgradeSelection(choice) {
         applyUpgrade(state, choice);
     }
     state.pendingLevelUps--;
-    updateHUD(state.player);
+    updateHUD(state.player, state.time, state.kills);
     if (state.pendingLevelUps > 0) {
         presentNextLevelUp();
         return;
     }
     state.mode = "PLAYING";
     showHUD();
-    updateHUD(state.player);
+    updateHUD(state.player, state.time, state.kills);
 }
 
 function startGame() {
     resetRun();
     state.mode = "PLAYING";
     showHUD();
-    updateHUD(state.player);
+    updateHUD(state.player, state.time, state.kills);
 }
 
 function returnToMenu() {
@@ -196,7 +196,7 @@ function updateGame(dt) {
     updateGems(state, dt);
     processLevelUps();
     handlePlayerCollision();
-    updateHUD(state.player);
+    updateHUD(state.player, state.time, state.kills);
     if (state.player.hp <= 0) {
         state.mode = "GAME_OVER";
         showGameOver(
