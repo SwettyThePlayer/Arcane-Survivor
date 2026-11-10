@@ -13,6 +13,8 @@ const elements = {
     xpText: document.getElementById("xp-text"),
     xpFill: document.getElementById("xp-fill"),
     bestScore: document.getElementById("best-score"),
+    highScore: document.getElementById("high-score"),
+    storageWarning: document.getElementById("storage-warning"),
     finalTime: document.getElementById("final-time"),
     finalKills: document.getElementById("final-kills"),
     newRecord: document.getElementById("new-record"),
@@ -26,6 +28,35 @@ const elements = {
 let activeChoices = [];
 let onChoiceSelected = null;
 let levelUpVisible = false;
+let storageWarning = false;
+
+const RECORDS_STORAGE_KEY = "arcane-survivor-records";
+
+function loadRecords() {
+    try {
+        const savedRecords = localStorage.getItem(RECORDS_STORAGE_KEY);
+        if (savedRecords === null) {
+            return { bestTime: 0, bestKills: 0 };
+        }
+
+        const records = JSON.parse(savedRecords);
+        if (
+            !Number.isFinite(records.bestTime) ||
+            records.bestTime < 0 ||
+            !Number.isInteger(records.bestKills) ||
+            records.bestKills < 0
+        ) {
+            storageWarning = true;
+            return { bestTime: 0, bestKills: 0 };
+        }
+        return records;
+    } catch {
+        storageWarning = true;
+        return { bestTime: 0, bestKills: 0 };
+    }
+}
+
+const records = loadRecords();
 
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
@@ -125,18 +156,27 @@ export function setupUI(onStart, onReturnToMenu) {
     );
 }
 
-export function showMenu(bestTime = null) {
+function updateRecordsDisplay() {
+    elements.bestScore.textContent = records.bestTime > 0
+        ? `Best time: ${formatTime(records.bestTime)}`
+        : "Best time: --";
+    elements.highScore.textContent = records.bestKills > 0
+        ? `High score: ${records.bestKills} kills`
+        : "High score: --";
+    elements.storageWarning.hidden = !storageWarning;
+    if (storageWarning) {
+        elements.storageWarning.textContent =
+            "Records could not be loaded or saved in this browser.";
+    }
+}
+
+export function showMenu() {
     clearLevelUpSelection();
     elements.menuScreen.hidden = false;
     elements.gameHud.hidden = true;
     elements.gameOverScreen.hidden = true;
     elements.levelUpScreen.hidden = true;
-    if (bestTime !== null) {
-        elements.bestScore.textContent =
-            `Best time: ${formatTime(bestTime)}`;
-    } else {
-        elements.bestScore.textContent = "Best time: --";
-    }
+    updateRecordsDisplay();
 }
 
 export function showHUD() {
@@ -207,7 +247,26 @@ export function showLevelUp(upgrades, onSelect) {
     elements.levelUpScreen.hidden = false;
 }
 
-export function showGameOver(time, kills, isNewRecord = false) {
+export function showGameOver(time, kills) {
+    const newBestTime = time > records.bestTime;
+    const newHighScore = kills > records.bestKills;
+    if (newBestTime) {
+        records.bestTime = time;
+    }
+    if (newHighScore) {
+        records.bestKills = kills;
+    }
+
+    try {
+        localStorage.setItem(
+            RECORDS_STORAGE_KEY,
+            JSON.stringify(records)
+        );
+        storageWarning = false;
+    } catch {
+        storageWarning = true;
+    }
+
     clearLevelUpSelection();
     elements.menuScreen.hidden = true;
     elements.gameHud.hidden = true;
@@ -217,9 +276,17 @@ export function showGameOver(time, kills, isNewRecord = false) {
         `Time survived: ${formatTime(time)}`;
     elements.finalKills.textContent =
         `Enemies defeated: ${kills}`;
-    if (isNewRecord) {
-        elements.newRecord.textContent = "NEW RECORD!";
-    } else {
-        elements.newRecord.textContent = "";
+    const recordMessages = [];
+    if (newBestTime) {
+        recordMessages.push("NEW BEST TIME!");
     }
+    if (newHighScore) {
+        recordMessages.push("NEW HIGH SCORE!");
+    }
+    if (storageWarning) {
+        recordMessages.push(
+            "Records could not be saved in this browser."
+        );
+    }
+    elements.newRecord.textContent = recordMessages.join(" ");
 }

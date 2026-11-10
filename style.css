@@ -95,10 +95,22 @@ body {
 }
 
 #best-score {
-    margin-bottom: 25px;
+    color: var(--purple-light);
+    font-size: 14px;
+}
+
+#high-score {
+    margin: 8px 0 25px;
 
     color: var(--purple-light);
     font-size: 14px;
+}
+
+#storage-warning {
+    margin: 12px 0 20px;
+
+    color: var(--red);
+    font-size: 13px;
 }
 
 button {
