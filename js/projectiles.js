@@ -68,18 +68,21 @@ function getOrbitPosition(player, index, count, time) {
     };
 }
 
-function findSpiritTarget(orb, enemies) {
+function findSpiritTarget(origin, enemies, hitTargets = null, range = null) {
     let nearestEnemy = null;
     let nearestDistance = Infinity;
-    const rangeSquared =
-        CONFIG.upgrades.orbs.spiritDashRange ** 2;
+    const targetRange = range || CONFIG.upgrades.orbs.spiritDashRange;
+    const rangeSquared = targetRange * targetRange;
     for (const enemy of enemies) {
-        if (enemy.hp <= 0) {
+        if (
+            enemy.hp <= 0 ||
+            (hitTargets && hitTargets.has(enemy))
+        ) {
             continue;
         }
         const distance = distanceSquared(
-            orb.x,
-            orb.y,
+            origin.x,
+            origin.y,
             enemy.x,
             enemy.y
         );
@@ -90,6 +93,20 @@ function findSpiritTarget(orb, enemies) {
         nearestDistance = distance;
     }
     return nearestEnemy;
+}
+
+function getSpiritDamage(player) {
+    return CONFIG.upgrades.orbs.damage *
+        (player.stats.damage / CONFIG.weapon.damage);
+}
+
+function damageSpiritTarget(state, enemy, onHit) {
+    const damage = getSpiritDamage(state.player);
+    enemy.hp -= damage;
+    recordDamage(state, enemy, damage);
+    if (onHit) {
+        onHit();
+    }
 }
 
 function moveOrbToward(orb, destination, player, dt) {
@@ -126,7 +143,9 @@ function syncSpiritOrbs(player) {
             phase: "orbit",
             cooldown: getSpiritDashInterval(player) *
                 (player.spiritOrbs.length / player.stats.orbs),
-            target: null
+            target: null,
+            hitTargets: null,
+            remainingBounces: 0
         });
     }
 }
@@ -148,6 +167,11 @@ function updateSpiritOrb(state, orb, index, dt, onHit) {
             orb.phase = orb.target ? "charge" : "orbit";
             if (!orb.target) {
                 orb.cooldown = CONFIG.upgrades.orbs.hitInterval;
+            } else {
+                orb.hitTargets = new Set([orb.target]);
+                orb.remainingBounces =
+                    player.stats.orbChain *
+                    CONFIG.upgrades.spiritChain.targetsPerStack;
             }
         }
         return;
@@ -159,6 +183,7 @@ function updateSpiritOrb(state, orb, index, dt, onHit) {
     if (moveOrbToward(orb, home, player, dt)) {
         orb.phase = "orbit";
         orb.cooldown = getSpiritDashInterval(player);
+        orb.hitTargets = null;
     }
 }
 
@@ -172,15 +197,42 @@ function updateChargingSpirit(state, orb, dt, onHit) {
     if (!circlesCollide(orb, orb.target)) {
         return;
     }
-    const damage = CONFIG.upgrades.orbs.damage *
-        (state.player.stats.damage / CONFIG.weapon.damage);
-    orb.target.hp -= damage;
-    recordDamage(state, orb.target, damage);
-    if (onHit) {
-        onHit();
+    const hitEnemy = orb.target;
+    damageSpiritTarget(state, hitEnemy, onHit);
+    if (orb.remainingBounces > 0) {
+        const nextTarget = findSpiritTarget(
+            hitEnemy,
+            state.enemies,
+            orb.hitTargets,
+            CONFIG.upgrades.spiritChain.range
+        );
+        if (nextTarget) {
+            orb.target = nextTarget;
+            orb.hitTargets.add(nextTarget);
+            orb.remainingBounces--;
+            return;
+        }
     }
     orb.target = null;
     orb.phase = "return";
+}
+
+function damageWispkeeperOrbContacts(state, dt, onHit) {
+    const orbs = getOrbPositions(state.player, state.time);
+    for (const enemy of state.enemies) {
+        if (enemy.hp <= 0) {
+            continue;
+        }
+        enemy.orbHitTimer = Math.max(0, enemy.orbHitTimer - dt);
+        if (enemy.orbHitTimer > 0) {
+            continue;
+        }
+        if (!orbs.some(orb => circlesCollide(orb, enemy))) {
+            continue;
+        }
+        damageSpiritTarget(state, enemy, onHit);
+        enemy.orbHitTimer = CONFIG.upgrades.orbs.hitInterval;
+    }
 }
 
 function updateSpiritOrbs(state, dt, onHit) {
@@ -189,6 +241,7 @@ function updateSpiritOrbs(state, dt, onHit) {
     for (let i = 0; i < player.spiritOrbs.length; i++) {
         updateSpiritOrb(state, player.spiritOrbs[i], i, dt, onHit);
     }
+    damageWispkeeperOrbContacts(state, dt, onHit);
 }
 
 export function updateOrbs(state, dt, onHit = null) {

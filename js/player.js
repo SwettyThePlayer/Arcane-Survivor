@@ -33,6 +33,7 @@ export function createPlayer(canvas, characterId) {
             pierce: CONFIG.weapon.pierce,
             regen: 0,
             orbs: character.startingOrbs,
+            orbChain: 0,
             pulse: 0
         }
     };

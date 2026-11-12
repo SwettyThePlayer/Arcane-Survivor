@@ -59,7 +59,7 @@ on-screen D-pad to move; desktop keyboards continue to work as usual.
 
 - Three enemy types and timed boss encounters
 - Two distinct playstyles: the Warden's staff bolts and the Wispkeeper's
-  two charging spirit orbs
+  orbiting spirits, which damage on touch and chain-charge between enemies
 - Automatic targeting and firing
 - XP collection, level-ups, and stackable upgrades
 - Rare power-ups, including healing, an area nuke, and temporary buffs

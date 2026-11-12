@@ -142,6 +142,18 @@ export const UPGRADES = [
         }
     },
     {
+        id: "spiritChain",
+        name: "Spirit Chain",
+        icon: "🔗",
+        description: `Spirit charges bounce to ${
+            CONFIG.upgrades.spiritChain.targetsPerStack
+        } additional nearby enemy per stack.`,
+        maxStacks: CONFIG.upgrades.spiritChain.maxStacks,
+        apply(player) {
+            player.stats.orbChain++;
+        }
+    },
+    {
         id: "pulse",
         name: "Arcane Pulse",
         icon: "💠",
@@ -160,6 +172,12 @@ export const UPGRADES = [
 
 export function getAvailableUpgrades(state) {
     return UPGRADES.filter(upgrade => {
+        if (
+            upgrade.id === "spiritChain" &&
+            state.player.characterId !== "wispkeeper"
+        ) {
+            return false;
+        }
         if (
             state.player.characterId === "wispkeeper" &&
             ["multishot", "pierce"].includes(upgrade.id)
@@ -194,6 +212,12 @@ export function applyUpgrade(state, selectedUpgrade) {
         return item.id === selectedUpgrade.id;
     });
     if (!upgrade) {
+        return false;
+    }
+    if (
+        upgrade.id === "spiritChain" &&
+        state.player.characterId !== "wispkeeper"
+    ) {
         return false;
     }
     const currentStacks =

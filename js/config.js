@@ -197,7 +197,13 @@ export const CONFIG = {
             spiritDashInterval: 1.8,
             spiritDashRange: 280,
             spiritDashSpeed: 520,
-            maxStacks: 4
+            maxStacks: 10
+        },
+
+        spiritChain: {
+            targetsPerStack: 1,
+            range: 180,
+            maxStacks: 5
         },
 
         pulse: {
