@@ -8,7 +8,12 @@ enemies. Defeat enemies, collect XP, and choose upgrades to grow stronger.
 
 The game uses HTML, CSS, JavaScript ES modules, and the Canvas 2D API. It has
 no build step, package installation, external libraries, or external game
-assets.
+assets.  
+
+To play, just open this link:  
+[https://swettytheplayer.github.io/Arcane-Survivor/](https://swettytheplayer.github.io/Arcane-Survivor/)
+
+Or, if you want to play locally: 
 
 1. Clone or download this repository.
 2. From the project folder, start a local static server:
@@ -19,7 +24,7 @@ assets.
 
 3. Open [http://localhost:8000](http://localhost:8000) in a modern browser.
 
-The game needs to be served from a local server because browsers restrict
+If you're going to play locally, the game needs to be served from a local server because browsers restrict
 JavaScript modules opened directly from the file system.
 
 ## Screenshots
