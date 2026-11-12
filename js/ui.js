@@ -8,6 +8,7 @@ const elements = {
     gameOverScreen: document.getElementById("game-over-screen"),
     levelUpScreen: document.getElementById("level-up-screen"),
     startButton: document.getElementById("start-button"),
+    characterOptions: document.querySelectorAll("[data-character-id]"),
     pauseButton: document.getElementById("pause-button"),
     resumeButton: document.getElementById("resume-button"),
     restartButton: document.getElementById("restart-button"),
@@ -169,7 +170,8 @@ export function setupUI(
     onTogglePause,
     onToggleMute,
     muted,
-    audioWarning
+    audioWarning,
+    onCharacterSelect
 ) {
     elements.startButton.addEventListener("click", () => {
         onStart();
@@ -182,6 +184,21 @@ export function setupUI(
     elements.muteButton.addEventListener("click", () => {
         onToggleMute();
     });
+    for (const option of elements.characterOptions) {
+        const characterId = option.dataset.characterId;
+        const character = CONFIG.characters[characterId];
+        option.querySelector(".character-name").textContent =
+            character.name;
+        option.addEventListener("click", () => {
+            for (const characterOption of elements.characterOptions) {
+                characterOption.setAttribute(
+                    "aria-pressed",
+                    String(characterOption === option)
+                );
+            }
+            onCharacterSelect(characterId);
+        });
+    }
     window.addEventListener(
         "keydown",
         handleLevelUpKeyDown

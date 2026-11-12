@@ -70,6 +70,7 @@ audio.onWarning = warning => {
 };
 const state = {
     mode: "MENU",
+    selectedCharacter: "warden",
     player: null,
     enemies: [],
     projectiles: [],
@@ -118,7 +119,7 @@ function clearMovementKeys() {
 }
 
 function resetRun() {
-    state.player = createPlayer(canvas);
+    state.player = createPlayer(canvas, state.selectedCharacter);
     state.enemies = [];
     state.projectiles = [];
     state.gems = [];
@@ -131,7 +132,9 @@ function resetRun() {
     state.nextBossTime = CONFIG.spawn.bossEveryMinutes * 60;
     state.bossWarningSeconds = 0;
     state.shake = 0;
-    state.upgradeStacks = {};
+    state.upgradeStacks = {
+        orbs: state.player.stats.orbs
+    };
     state.pendingLevelUps = 0;
     clearMovementKeys();
 }
@@ -401,7 +404,9 @@ function drawOrbs() {
     if (!state.player) {
         return;
     }
-    ctx.fillStyle = "#72e5ff";
+    ctx.fillStyle = state.player.characterId === "wispkeeper"
+        ? "#b8f4ff"
+        : "#72e5ff";
     for (const orb of getOrbPositions(state.player, state.time)) {
         ctx.beginPath();
         ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2);
@@ -468,13 +473,34 @@ function drawWizardSprite(player) {
     ctx.save();
     ctx.translate(player.x, player.y);
     const r = player.radius;
+    const palette = player.characterId === "wispkeeper"
+        ? {
+            robeStart: "#367b91",
+            robeMid: "#234c67",
+            robeEnd: "#192d49",
+            outline: "#a6f0ff",
+            hat: "#1d455c",
+            staff: "#8cc9d7",
+            staffOrb: "#b8f4ff",
+            staffGlow: "#b8f4ff"
+        }
+        : {
+            robeStart: "#614293",
+            robeMid: "#382859",
+            robeEnd: "#241b3d",
+            outline: "#b695f0",
+            hat: "#35244f",
+            staff: "#d2ad78",
+            staffOrb: "#9ce9f5",
+            staffGlow: "#6bd9f1"
+        };
     const robe = ctx.createLinearGradient(-r, 0, r, r);
-    robe.addColorStop(0, "#614293");
-    robe.addColorStop(0.55, "#382859");
-    robe.addColorStop(1, "#241b3d");
+    robe.addColorStop(0, palette.robeStart);
+    robe.addColorStop(0.55, palette.robeMid);
+    robe.addColorStop(1, palette.robeEnd);
 
     ctx.fillStyle = robe;
-    ctx.strokeStyle = "#b695f0";
+    ctx.strokeStyle = palette.outline;
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(-r * 0.72, r * 0.92);
@@ -485,8 +511,8 @@ function drawWizardSprite(player) {
     ctx.fill();
     ctx.stroke();
     drawWizardFace(r);
-    drawWizardHat(r);
-    drawWizardStaff(r);
+    drawWizardHat(r, palette);
+    drawWizardStaff(r, palette);
     ctx.restore();
 }
 
@@ -506,9 +532,9 @@ function drawWizardFace(radius) {
     ctx.fill();
 }
 
-function drawWizardHat(radius) {
-    ctx.fillStyle = "#35244f";
-    ctx.strokeStyle = "#b695f0";
+function drawWizardHat(radius, palette) {
+    ctx.fillStyle = palette.hat;
+    ctx.strokeStyle = palette.outline;
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(-radius * 0.56, -radius * 0.43);
@@ -523,15 +549,15 @@ function drawWizardHat(radius) {
     ctx.stroke();
 }
 
-function drawWizardStaff(radius) {
-    ctx.strokeStyle = "#d2ad78";
+function drawWizardStaff(radius, palette) {
+    ctx.strokeStyle = palette.staff;
     ctx.lineWidth = 2.5;
     ctx.beginPath();
     ctx.moveTo(radius * 0.78, radius * 0.86);
     ctx.lineTo(radius * 0.94, -radius * 0.9);
     ctx.stroke();
-    ctx.fillStyle = "#9ce9f5";
-    ctx.shadowColor = "#6bd9f1";
+    ctx.fillStyle = palette.staffOrb;
+    ctx.shadowColor = palette.staffGlow;
     ctx.shadowBlur = 8;
     ctx.beginPath();
     ctx.arc(radius * 0.94, -radius, radius * 0.17, 0, Math.PI * 2);
@@ -862,7 +888,11 @@ function handleGlobalKeyDown(event) {
         togglePause();
         return;
     }
-    if (key === "enter" && state.mode === "MENU") {
+    if (
+        key === "enter" &&
+        state.mode === "MENU" &&
+        !(event.target instanceof HTMLButtonElement)
+    ) {
         event.preventDefault();
         startGame();
     }
@@ -888,7 +918,10 @@ setupUI(
         }
     },
     audio.muted,
-    audio.warning
+    audio.warning,
+    characterId => {
+        state.selectedCharacter = characterId;
+    }
 );
 
 window.addEventListener(

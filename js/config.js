@@ -1,4 +1,14 @@
 export const CONFIG = {
+    characters: {
+        warden: {
+            name: "The Warden",
+            startingOrbs: 0
+        },
+        wispkeeper: {
+            name: "The Wispkeeper",
+            startingOrbs: 1
+        }
+    },
     player: {
         radius: 16,
         speed: 200,

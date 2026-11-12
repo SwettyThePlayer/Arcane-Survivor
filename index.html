@@ -47,6 +47,38 @@
             </div>
             <p id="storage-warning" hidden></p>
 
+            <div class="character-select">
+                <p class="controls-title">CHOOSE YOUR WARDEN</p>
+                <div
+                    class="character-choices"
+                    role="group"
+                    aria-label="Choose a character"
+                >
+                    <button
+                        class="character-choice"
+                        type="button"
+                        data-character-id="warden"
+                        aria-pressed="true"
+                    >
+                        <span class="character-name">The Warden</span>
+                        <span class="character-description">
+                            A steady hand and a trusted arcane staff.
+                        </span>
+                    </button>
+                    <button
+                        class="character-choice"
+                        type="button"
+                        data-character-id="wispkeeper"
+                        aria-pressed="false"
+                    >
+                        <span class="character-name">The Wispkeeper</span>
+                        <span class="character-description">
+                            Begins with an orbiting spirit orb.
+                        </span>
+                    </button>
+                </div>
+            </div>
+
             <button id="start-button" class="start-button">ENTER THE ARENA</button>
 
             <div class="controls">

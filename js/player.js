@@ -1,8 +1,10 @@
 import { CONFIG } from "./config.js";
 import { clamp, normalizeVector, distanceSquared } from "./utils.js";
 
-export function createPlayer(canvas) {
+export function createPlayer(canvas, characterId) {
+    const character = CONFIG.characters[characterId];
     const player = {
+        characterId,
         x: canvas.width / 2,
         y: canvas.height / 2,
         radius: CONFIG.player.radius,
@@ -29,7 +31,7 @@ export function createPlayer(canvas) {
             projectileCount: CONFIG.weapon.projectileCount,
             pierce: CONFIG.weapon.pierce,
             regen: 0,
-            orbs: 0,
+            orbs: character.startingOrbs,
             pulse: 0
         }
     };
