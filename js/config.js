@@ -6,7 +6,7 @@ export const CONFIG = {
         },
         wispkeeper: {
             name: "The Wispkeeper",
-            startingOrbs: 1
+            startingOrbs: 2
         }
     },
     player: {

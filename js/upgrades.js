@@ -118,9 +118,9 @@ export const UPGRADES = [
     },
     {
         id: "projSpeed",
-        name: "Swift Bolts",
+        name: "Swift Strikes",
         icon: "💫",
-        description: `Increase projectile speed by ${
+        description: `Increase bolt and spirit charge speed by ${
             Math.round(
                 (CONFIG.upgrades.projSpeed.multiplier - 1) * 100
             )
@@ -160,6 +160,12 @@ export const UPGRADES = [
 
 export function getAvailableUpgrades(state) {
     return UPGRADES.filter(upgrade => {
+        if (
+            state.player.characterId === "wispkeeper" &&
+            ["multishot", "pierce"].includes(upgrade.id)
+        ) {
+            return false;
+        }
         const currentStacks =
             state.upgradeStacks[upgrade.id] || 0;
         return currentStacks < upgrade.maxStacks;

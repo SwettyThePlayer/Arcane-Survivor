@@ -92,11 +92,14 @@ function findSpiritTarget(orb, enemies) {
     return nearestEnemy;
 }
 
-function moveOrbToward(orb, destination, dt) {
+function moveOrbToward(orb, destination, player, dt) {
     const directionX = destination.x - orb.x;
     const directionY = destination.y - orb.y;
     const distance = Math.hypot(directionX, directionY);
-    const movement = CONFIG.upgrades.orbs.spiritDashSpeed * dt;
+    const speedMultiplier =
+        player.stats.projectileSpeed / CONFIG.weapon.projectileSpeed;
+    const movement =
+        CONFIG.upgrades.orbs.spiritDashSpeed * speedMultiplier * dt;
     if (distance <= movement || distance === 0) {
         orb.x = destination.x;
         orb.y = destination.y;
@@ -107,6 +110,13 @@ function moveOrbToward(orb, destination, dt) {
     return false;
 }
 
+function getSpiritDashInterval(player) {
+    const fireRateMultiplier =
+        player.stats.fireRate / CONFIG.weapon.fireRate;
+    return CONFIG.upgrades.orbs.spiritDashInterval /
+        fireRateMultiplier;
+}
+
 function syncSpiritOrbs(player) {
     while (player.spiritOrbs.length < player.stats.orbs) {
         player.spiritOrbs.push({
@@ -114,7 +124,7 @@ function syncSpiritOrbs(player) {
             y: player.y,
             radius: CONFIG.upgrades.orbs.radius,
             phase: "orbit",
-            cooldown: CONFIG.upgrades.orbs.spiritDashInterval *
+            cooldown: getSpiritDashInterval(player) *
                 (player.spiritOrbs.length / player.stats.orbs),
             target: null
         });
@@ -146,9 +156,9 @@ function updateSpiritOrb(state, orb, index, dt, onHit) {
         updateChargingSpirit(state, orb, dt, onHit);
         return;
     }
-    if (moveOrbToward(orb, home, dt)) {
+    if (moveOrbToward(orb, home, player, dt)) {
         orb.phase = "orbit";
-        orb.cooldown = CONFIG.upgrades.orbs.spiritDashInterval;
+        orb.cooldown = getSpiritDashInterval(player);
     }
 }
 
@@ -158,12 +168,14 @@ function updateChargingSpirit(state, orb, dt, onHit) {
         orb.phase = "return";
         return;
     }
-    moveOrbToward(orb, orb.target, dt);
+    moveOrbToward(orb, orb.target, state.player, dt);
     if (!circlesCollide(orb, orb.target)) {
         return;
     }
-    orb.target.hp -= CONFIG.upgrades.orbs.damage;
-    recordDamage(state, orb.target, CONFIG.upgrades.orbs.damage);
+    const damage = CONFIG.upgrades.orbs.damage *
+        (state.player.stats.damage / CONFIG.weapon.damage);
+    orb.target.hp -= damage;
+    recordDamage(state, orb.target, damage);
     if (onHit) {
         onHit();
     }
