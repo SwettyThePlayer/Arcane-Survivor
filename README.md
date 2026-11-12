@@ -1,7 +1,7 @@
 # Arcane Survivor
 
 Survive the endless night in this Vampire Survivors-style browser game. Choose
-your character, move through the arena while your staff automatically targets
+your character, move through the arena while your magic automatically targets
 nearby enemies, collect XP, and choose upgrades to grow stronger.
 
 ## Play
@@ -58,7 +58,8 @@ on-screen D-pad to move; desktop keyboards continue to work as usual.
 ## Features
 
 - Three enemy types and timed boss encounters
-- Two playable characters: The Warden and The Wispkeeper, who begins with an orb
+- Two distinct playstyles: the Warden's staff bolts and the Wispkeeper's
+  charging spirit orbs
 - Automatic targeting and firing
 - XP collection, level-ups, and stackable upgrades
 - Rare power-ups, including healing, an area nuke, and temporary buffs

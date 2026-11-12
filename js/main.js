@@ -408,10 +408,13 @@ function drawOrbs() {
         ? "#b8f4ff"
         : "#72e5ff";
     for (const orb of getOrbPositions(state.player, state.time)) {
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = orb.phase === "charge" ? 22 : 10;
         ctx.beginPath();
         ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2);
         ctx.fill();
     }
+    ctx.shadowBlur = 0;
 }
 
 function drawEnemies() {
@@ -510,10 +513,54 @@ function drawWizardSprite(player) {
     ctx.quadraticCurveTo(0, r * 1.2, -r * 0.72, r * 0.92);
     ctx.fill();
     ctx.stroke();
-    drawWizardFace(r);
-    drawWizardHat(r, palette);
-    drawWizardStaff(r, palette);
+    if (player.characterId === "wispkeeper") {
+        drawWispkeeperHood(r, palette);
+        drawWispkeeperFace(r);
+        drawSpiritFocus(r, palette);
+    } else {
+        drawWizardFace(r);
+        drawWizardHat(r, palette);
+        drawWizardStaff(r, palette);
+    }
     ctx.restore();
+}
+
+function drawWispkeeperHood(radius, palette) {
+    ctx.fillStyle = palette.hat;
+    ctx.strokeStyle = palette.outline;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-radius * 0.52, -radius * 0.12);
+    ctx.quadraticCurveTo(-radius * 0.85, -radius, 0, -radius * 1.48);
+    ctx.quadraticCurveTo(radius * 0.85, -radius, radius * 0.52, -radius * 0.12);
+    ctx.quadraticCurveTo(0, -radius * 0.48, -radius * 0.52, -radius * 0.12);
+    ctx.fill();
+    ctx.stroke();
+}
+
+function drawWispkeeperFace(radius) {
+    ctx.fillStyle = "#142e40";
+    ctx.beginPath();
+    ctx.arc(0, -radius * 0.22, radius * 0.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#b8f4ff";
+    ctx.shadowColor = "#72e5ff";
+    ctx.shadowBlur = 7;
+    ctx.beginPath();
+    ctx.arc(-radius * 0.12, -radius * 0.22, radius * 0.055, 0, Math.PI * 2);
+    ctx.arc(radius * 0.12, -radius * 0.22, radius * 0.055, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+}
+
+function drawSpiritFocus(radius, palette) {
+    ctx.fillStyle = palette.staffOrb;
+    ctx.shadowColor = palette.staffGlow;
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.arc(radius * 0.72, radius * 0.55, radius * 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
 }
 
 function drawWizardFace(radius) {

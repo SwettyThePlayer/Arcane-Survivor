@@ -8,6 +8,7 @@ const elements = {
     gameOverScreen: document.getElementById("game-over-screen"),
     levelUpScreen: document.getElementById("level-up-screen"),
     startButton: document.getElementById("start-button"),
+    menuCharacterTitle: document.getElementById("menu-character-title"),
     characterOptions: document.querySelectorAll("[data-character-id]"),
     pauseButton: document.getElementById("pause-button"),
     resumeButton: document.getElementById("resume-button"),
@@ -197,6 +198,8 @@ export function setupUI(
                 );
             }
             onCharacterSelect(characterId);
+            elements.menuCharacterTitle.textContent =
+                character.name.toUpperCase();
         });
     }
     window.addEventListener(

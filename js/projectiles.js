@@ -1,4 +1,4 @@
-import { circlesCollide } from "./utils.js";
+import { circlesCollide, distanceSquared } from "./utils.js";
 import { CONFIG } from "./config.js";
 import { recordDamage } from "./effects.js";
 
@@ -32,6 +32,14 @@ export function fireProjectiles(player, target, projectiles) {
 
 export function getOrbPositions(player, time) {
     const count = player.stats.orbs;
+    if (player.characterId === "wispkeeper") {
+        return player.spiritOrbs.map(orb => ({
+            x: orb.x,
+            y: orb.y,
+            radius: CONFIG.upgrades.orbs.radius,
+            phase: orb.phase
+        }));
+    }
     const positions = [];
     for (let i = 0; i < count; i++) {
         const angle =
@@ -48,8 +56,137 @@ export function getOrbPositions(player, time) {
     return positions;
 }
 
+function getOrbitPosition(player, index, count, time) {
+    const angle =
+        time * CONFIG.upgrades.orbs.orbitSpeed +
+        (index / count) * Math.PI * 2;
+    return {
+        x: player.x +
+            Math.cos(angle) * CONFIG.upgrades.orbs.orbitRadius,
+        y: player.y +
+            Math.sin(angle) * CONFIG.upgrades.orbs.orbitRadius
+    };
+}
+
+function findSpiritTarget(orb, enemies) {
+    let nearestEnemy = null;
+    let nearestDistance = Infinity;
+    const rangeSquared =
+        CONFIG.upgrades.orbs.spiritDashRange ** 2;
+    for (const enemy of enemies) {
+        if (enemy.hp <= 0) {
+            continue;
+        }
+        const distance = distanceSquared(
+            orb.x,
+            orb.y,
+            enemy.x,
+            enemy.y
+        );
+        if (distance > rangeSquared || distance >= nearestDistance) {
+            continue;
+        }
+        nearestEnemy = enemy;
+        nearestDistance = distance;
+    }
+    return nearestEnemy;
+}
+
+function moveOrbToward(orb, destination, dt) {
+    const directionX = destination.x - orb.x;
+    const directionY = destination.y - orb.y;
+    const distance = Math.hypot(directionX, directionY);
+    const movement = CONFIG.upgrades.orbs.spiritDashSpeed * dt;
+    if (distance <= movement || distance === 0) {
+        orb.x = destination.x;
+        orb.y = destination.y;
+        return true;
+    }
+    orb.x += directionX / distance * movement;
+    orb.y += directionY / distance * movement;
+    return false;
+}
+
+function syncSpiritOrbs(player) {
+    while (player.spiritOrbs.length < player.stats.orbs) {
+        player.spiritOrbs.push({
+            x: player.x,
+            y: player.y,
+            radius: CONFIG.upgrades.orbs.radius,
+            phase: "orbit",
+            cooldown: CONFIG.upgrades.orbs.spiritDashInterval *
+                (player.spiritOrbs.length / player.stats.orbs),
+            target: null
+        });
+    }
+}
+
+function updateSpiritOrb(state, orb, index, dt, onHit) {
+    const player = state.player;
+    const home = getOrbitPosition(
+        player,
+        index,
+        player.spiritOrbs.length,
+        state.time
+    );
+    if (orb.phase === "orbit") {
+        orb.x = home.x;
+        orb.y = home.y;
+        orb.cooldown = Math.max(0, orb.cooldown - dt);
+        if (orb.cooldown === 0) {
+            orb.target = findSpiritTarget(orb, state.enemies);
+            orb.phase = orb.target ? "charge" : "orbit";
+            if (!orb.target) {
+                orb.cooldown = CONFIG.upgrades.orbs.hitInterval;
+            }
+        }
+        return;
+    }
+    if (orb.phase === "charge") {
+        updateChargingSpirit(state, orb, dt, onHit);
+        return;
+    }
+    if (moveOrbToward(orb, home, dt)) {
+        orb.phase = "orbit";
+        orb.cooldown = CONFIG.upgrades.orbs.spiritDashInterval;
+    }
+}
+
+function updateChargingSpirit(state, orb, dt, onHit) {
+    if (!orb.target || orb.target.hp <= 0) {
+        orb.target = null;
+        orb.phase = "return";
+        return;
+    }
+    moveOrbToward(orb, orb.target, dt);
+    if (!circlesCollide(orb, orb.target)) {
+        return;
+    }
+    orb.target.hp -= CONFIG.upgrades.orbs.damage;
+    recordDamage(state, orb.target, CONFIG.upgrades.orbs.damage);
+    if (onHit) {
+        onHit();
+    }
+    orb.target = null;
+    orb.phase = "return";
+}
+
+function updateSpiritOrbs(state, dt, onHit) {
+    const player = state.player;
+    syncSpiritOrbs(player);
+    for (let i = 0; i < player.spiritOrbs.length; i++) {
+        updateSpiritOrb(state, player.spiritOrbs[i], i, dt, onHit);
+    }
+}
+
 export function updateOrbs(state, dt, onHit = null) {
+    if (state.player.characterId === "wispkeeper") {
+        updateSpiritOrbs(state, dt, onHit);
+    }
     const orbs = getOrbPositions(state.player, state.time);
+    if (state.player.characterId === "wispkeeper") {
+        return removeKilledEnemies(state);
+    }
     if (orbs.length === 0) {
         return [];
     }
@@ -76,6 +213,10 @@ export function updateOrbs(state, dt, onHit = null) {
         }
     }
 
+    return removeKilledEnemies(state);
+}
+
+function removeKilledEnemies(state) {
     const killedEnemies = state.enemies.filter(enemy => enemy.hp <= 0);
     state.enemies = state.enemies.filter(enemy => enemy.hp > 0);
     return killedEnemies;

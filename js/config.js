@@ -194,6 +194,9 @@ export const CONFIG = {
             radius: 6,
             orbitRadius: 52,
             orbitSpeed: 3,
+            spiritDashInterval: 1.8,
+            spiritDashRange: 280,
+            spiritDashSpeed: 520,
             maxStacks: 4
         },
 

@@ -22,6 +22,7 @@ export function createPlayer(canvas, characterId) {
         damageReductionTimer: 0,
         fireTimer: 0,
         invulnTimer: 0,
+        spiritOrbs: [],
         stats: {
             damage: CONFIG.weapon.damage,
             fireRate: CONFIG.weapon.fireRate,
@@ -102,6 +103,9 @@ export function findNearestEnemy(player, enemies) {
 }
 
 export function updateAutoFire(player, enemies, dt) {
+    if (player.characterId === "wispkeeper") {
+        return null;
+    }
     player.fireTimer -= dt;
     if (player.fireTimer > 0) {
         return null;
