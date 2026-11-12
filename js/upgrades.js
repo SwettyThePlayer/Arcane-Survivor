@@ -64,6 +64,18 @@ export const UPGRADES = [
         }
     },
     {
+        id: "regen",
+        name: "Mending Aura",
+        icon: "💚",
+        description: `Restore up to ${
+            CONFIG.upgrades.regen.hpPerSecond
+        } HP per second.`,
+        maxStacks: CONFIG.upgrades.regen.maxStacks,
+        apply(player) {
+            player.stats.regen += CONFIG.upgrades.regen.hpPerSecond;
+        }
+    },
+    {
         id: "pickup",
         name: "Magnetic Aura",
         icon: "🧲",

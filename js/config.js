@@ -150,6 +150,11 @@ export const CONFIG = {
             maxStacks: 8
         },
 
+        regen: {
+            hpPerSecond: 0.5,
+            maxStacks: 5
+        },
+
         pickup: {
             multiplier: 1.30,
             maxStacks: 5

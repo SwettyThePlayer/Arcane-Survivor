@@ -28,6 +28,7 @@ export function createPlayer(canvas) {
             projectileLifetime: CONFIG.weapon.lifetime,
             projectileCount: CONFIG.weapon.projectileCount,
             pierce: CONFIG.weapon.pierce,
+            regen: 0,
             orbs: 0,
             pulse: 0
         }
@@ -65,6 +66,12 @@ export function updatePlayer(player, keys, dt, canvas) {
         player.radius,
         canvas.height - player.radius
     );
+    if (player.stats.regen > 0) {
+        player.hp = Math.min(
+            player.maxHp,
+            player.hp + player.stats.regen * dt
+        );
+    }
     if (player.invulnTimer > 0) {
         player.invulnTimer = Math.max(0, player.invulnTimer - dt);
     }
