@@ -8,7 +8,14 @@ import {
 
 import { setupInput } from "./input.js";
 
-import { dropGem, updateGems } from "./pickups.js";
+import {
+    dropGem,
+    dropPowerup,
+    updateGems,
+    updatePowerups,
+    POWERUP_COLORS,
+    POWERUP_ICONS
+} from "./pickups.js";
 
 import {
     createPlayer,
@@ -67,6 +74,7 @@ const state = {
     enemies: [],
     projectiles: [],
     gems: [],
+    powerups: [],
     particles: [],
     texts: [],
     time: 0,
@@ -114,6 +122,7 @@ function resetRun() {
     state.enemies = [];
     state.projectiles = [];
     state.gems = [];
+    state.powerups = [];
     state.particles = [];
     state.texts = [];
     state.time = 0;
@@ -194,6 +203,7 @@ function returnToMenu() {
     state.enemies = [];
     state.projectiles = [];
     state.gems = [];
+    state.powerups = [];
     state.particles = [];
     state.texts = [];
 
@@ -204,14 +214,20 @@ function returnToMenu() {
 
 function handlePlayerCollision() {
     const player = state.player;
-    if (player.invulnTimer > 0) {
+    if (player.invulnTimer > 0 || player.immunityTimer > 0) {
         return;
     }
     for (const enemy of state.enemies) {
         if (!circlesCollide(player, enemy)) {
             continue;
         }
-        const damageTaken = Math.min(player.hp, enemy.damage);
+        const damageMultiplier = player.damageReductionTimer > 0
+            ? CONFIG.powerups.damageReductionMultiplier
+            : 1;
+        const damageTaken = Math.min(
+            player.hp,
+            enemy.damage * damageMultiplier
+        );
         player.hp = Math.max(0, player.hp - damageTaken);
         player.invulnTimer = CONFIG.player.invulnTime;
         recordPlayerDamage(state, player, damageTaken);
@@ -267,10 +283,25 @@ function updateGame(dt) {
         playSound(audio, "hit");
     }
     updateCombatEffects(state, dt);
+    const collectedPowerups = updatePowerups(state);
+    for (const result of collectedPowerups) {
+        killedEnemies.push(...result.killedEnemies);
+        state.texts.push({
+            x: state.player.x,
+            y: state.player.y - state.player.radius - 24,
+            value: result.notice,
+            color: POWERUP_COLORS[result.type],
+            life: CONFIG.powerups.noticeDuration
+        });
+    }
+    if (collectedPowerups.length > 0) {
+        playSound(audio, "pickup");
+    }
     for (const enemy of killedEnemies) {
         state.kills++;
         recordEnemyDefeat(state, enemy);
         dropGem(state, enemy);
+        dropPowerup(state, enemy);
     }
     const collectedGems = updateGems(state, dt);
     if (collectedGems > 0) {
@@ -316,6 +347,35 @@ function drawGems() {
             Math.PI * 2
         );
         ctx.fill();
+    }
+}
+
+function drawPowerups() {
+    const radius = CONFIG.powerups.radius;
+    for (const powerup of state.powerups) {
+        const color = POWERUP_COLORS[powerup.type];
+        ctx.save();
+        ctx.translate(powerup.x, powerup.y);
+        ctx.rotate(Math.PI / 4);
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 12;
+        ctx.globalAlpha = 0.22;
+        ctx.fillStyle = color;
+        ctx.fillRect(-radius * 0.78, -radius * 0.78, radius * 1.56, radius * 1.56);
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(-radius * 0.78, -radius * 0.78, radius * 1.56, radius * 1.56);
+        ctx.restore();
+
+        ctx.fillStyle = color;
+        ctx.font = "bold 15px Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 8;
+        ctx.fillText(POWERUP_ICONS[powerup.type], powerup.x, powerup.y);
+        ctx.shadowBlur = 0;
     }
 }
 
@@ -755,6 +815,7 @@ function drawGame() {
     drawArenaBackground();
     drawArenaMotes(state.time);
     drawGems();
+    drawPowerups();
     drawProjectiles();
     drawOrbs();
     drawPulse(ctx, state.player);

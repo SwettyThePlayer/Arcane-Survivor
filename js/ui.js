@@ -15,6 +15,7 @@ const elements = {
     levelText: document.getElementById("level-text"),
     xpText: document.getElementById("xp-text"),
     xpFill: document.getElementById("xp-fill"),
+    buffStatus: document.getElementById("buff-status"),
     bestScore: document.getElementById("best-score"),
     highScore: document.getElementById("high-score"),
     storageWarning: document.getElementById("storage-warning"),
@@ -262,6 +263,18 @@ export function updateHUD(
         `${xpPercentage}%`;
     elements.timeText.textContent = formatTime(time);
     elements.killsText.textContent = String(kills);
+    const activeBuffs = [];
+    if (player.speedBoostTimer > 0) {
+        activeBuffs.push(`SPEED ${Math.ceil(player.speedBoostTimer)}s`);
+    }
+    if (player.immunityTimer > 0) {
+        activeBuffs.push(`WARD ${Math.ceil(player.immunityTimer)}s`);
+    }
+    if (player.damageReductionTimer > 0) {
+        activeBuffs.push(`STONE SKIN ${Math.ceil(player.damageReductionTimer)}s`);
+    }
+    elements.buffStatus.textContent = activeBuffs.join("  ·  ");
+    elements.buffStatus.hidden = activeBuffs.length === 0;
     elements.bossWarning.hidden = bossWarningSeconds <= 0;
     if (bossWarningSeconds > 0) {
         elements.bossWarning.textContent =

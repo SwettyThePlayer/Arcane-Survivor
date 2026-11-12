@@ -921,6 +921,19 @@ kbd {
     padding: 10px 12px;
 }
 
+.buff-status {
+    margin-top: 7px;
+    padding: 7px 9px;
+    background: rgba(118, 221, 242, 0.08);
+    border: 1px solid rgba(118, 221, 242, 0.18);
+    border-radius: 8px;
+    color: #b7edf4;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+}
+
 #time-text,
 #kills-text {
     color: #e4d7ff;

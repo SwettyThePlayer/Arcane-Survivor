@@ -15,6 +15,9 @@ export function createPlayer(canvas) {
         pulseTimer: 0,
         pulseEffectTimer: 0,
         damageFlash: 0,
+        speedBoostTimer: 0,
+        immunityTimer: 0,
+        damageReductionTimer: 0,
         fireTimer: 0,
         invulnTimer: 0,
         stats: {
@@ -40,8 +43,18 @@ export function updatePlayer(player, keys, dt, canvas) {
     if (keys.up) moveY -= 1;
     if (keys.down) moveY += 1;
     const direction = normalizeVector(moveX, moveY);
-    player.x += direction.x * player.speed * dt;
-    player.y += direction.y * player.speed * dt;
+    player.speedBoostTimer = Math.max(0, player.speedBoostTimer - dt);
+    player.immunityTimer = Math.max(0, player.immunityTimer - dt);
+    player.damageReductionTimer = Math.max(
+        0,
+        player.damageReductionTimer - dt
+    );
+    const speedMultiplier = player.speedBoostTimer > 0
+        ? CONFIG.powerups.speedMultiplier
+        : 1;
+    const movementSpeed = player.speed * speedMultiplier;
+    player.x += direction.x * movementSpeed * dt;
+    player.y += direction.y * movementSpeed * dt;
     player.x = clamp(
         player.x,
         player.radius,

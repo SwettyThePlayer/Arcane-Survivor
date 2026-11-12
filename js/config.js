@@ -72,6 +72,26 @@ export const CONFIG = {
             return 5 + level * 5;
         }
     },
+    powerups: {
+        dropChance: 0.03,
+        weights: {
+            heal: 30,
+            nuke: 5,
+            levelUp: 15,
+            speed: 20,
+            immunity: 15,
+            damageReduction: 15
+        },
+        radius: 11,
+        healPercent: 0.30,
+        nukeRadius: 900,
+        nukeBossDamagePercent: 0.50,
+        speedMultiplier: 1.5,
+        damageReductionMultiplier: 0.5,
+        buffDurationMin: 10,
+        buffDurationMax: 15,
+        noticeDuration: 0.8
+    },
     effects: {
         hitFlashDuration: 0.12,
         damageTextDuration: 0.55,
