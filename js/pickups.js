@@ -46,6 +46,14 @@ function choosePowerupType() {
 }
 
 export function dropPowerup(state, enemy) {
+    if (enemy.type === "boss") {
+        state.powerups.push({
+            x: enemy.x,
+            y: enemy.y,
+            type: CONFIG.powerups.bossReward
+        });
+        return true;
+    }
     if (Math.random() >= CONFIG.powerups.dropChance) {
         return false;
     }

@@ -60,10 +60,12 @@ export const CONFIG = {
         startInterval: 1.2,
         minInterval: 0.25,
         intervalDecayPerSec: 0.004,
-        hpScalePerMinute: 0.25,
+        hpScalePerMinute: 0.3,
         maxEnemies: 250,
         bossEveryMinutes: 3,
-        bossWarningDuration: 10
+        bossWarningDuration: 10,
+        narrowArenaDimension: 640,
+        narrowArenaIntervalMultiplier: 1.25
     },
 
     xp: {
@@ -74,6 +76,7 @@ export const CONFIG = {
     },
     powerups: {
         dropChance: 0.03,
+        bossReward: "levelUp",
         weights: {
             heal: 30,
             nuke: 5,

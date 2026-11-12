@@ -115,11 +115,17 @@ export function updateEnemies(state, dt, canvas) {
     state.spawnTimer -= dt;
 
     if (state.spawnTimer <= 0) {
-        const spawnInterval = Math.max(
+        const baseSpawnInterval = Math.max(
             CONFIG.spawn.minInterval,
             CONFIG.spawn.startInterval -
                 state.time * CONFIG.spawn.intervalDecayPerSec
         );
+        const isNarrowArena = Math.min(canvas.width, canvas.height) <
+            CONFIG.spawn.narrowArenaDimension;
+        const spawnInterval = isNarrowArena
+            ? baseSpawnInterval *
+                CONFIG.spawn.narrowArenaIntervalMultiplier
+            : baseSpawnInterval;
         if (state.enemies.length < CONFIG.spawn.maxEnemies) {
             spawnEnemy(state, canvas);
         }
