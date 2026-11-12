@@ -4,6 +4,7 @@ const elements = {
     menuScreen: document.getElementById("menu-screen"),
     gameHud: document.getElementById("game-hud"),
     pauseScreen: document.getElementById("pause-screen"),
+    touchControls: document.getElementById("touch-controls"),
     gameOverScreen: document.getElementById("game-over-screen"),
     levelUpScreen: document.getElementById("level-up-screen"),
     startButton: document.getElementById("start-button"),
@@ -207,6 +208,7 @@ export function showMenu() {
     elements.menuScreen.hidden = false;
     elements.gameHud.hidden = true;
     elements.pauseButton.hidden = true;
+    elements.touchControls.hidden = true;
     elements.pauseScreen.hidden = true;
     elements.gameOverScreen.hidden = true;
     elements.levelUpScreen.hidden = true;
@@ -218,6 +220,7 @@ export function showHUD(restorePauseFocus = false) {
     elements.menuScreen.hidden = true;
     elements.gameHud.hidden = false;
     elements.pauseButton.hidden = false;
+    elements.touchControls.hidden = false;
     elements.pauseScreen.hidden = true;
     elements.gameOverScreen.hidden = true;
     elements.levelUpScreen.hidden = true;
@@ -228,6 +231,7 @@ export function showHUD(restorePauseFocus = false) {
 
 export function showPaused() {
     elements.pauseButton.hidden = true;
+    elements.touchControls.hidden = true;
     elements.pauseScreen.hidden = false;
     elements.resumeButton.focus();
 }
@@ -325,6 +329,7 @@ export function showLevelUp(upgrades, onSelect) {
     elements.menuScreen.hidden = true;
     elements.gameHud.hidden = true;
     elements.pauseButton.hidden = true;
+    elements.touchControls.hidden = true;
     elements.pauseScreen.hidden = true;
     elements.gameOverScreen.hidden = true;
     elements.levelUpScreen.hidden = false;
@@ -354,6 +359,7 @@ export function showGameOver(time, kills) {
     elements.menuScreen.hidden = true;
     elements.gameHud.hidden = true;
     elements.pauseButton.hidden = true;
+    elements.touchControls.hidden = true;
     elements.pauseScreen.hidden = true;
     elements.gameOverScreen.hidden = false;
     elements.levelUpScreen.hidden = true;

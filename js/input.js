@@ -26,6 +26,48 @@ export function setupInput(state) {
         left: false,
         right: false
     };
+    const activePointers = new Map();
+    const keyboardDirections = new Set();
+    const touchButtons = document.querySelectorAll(
+        "[data-move-direction]"
+    );
+
+    function updateDirection(direction) {
+        const pointerHeld = [...activePointers.values()].includes(direction);
+        state.keys[direction] =
+            keyboardDirections.has(direction) || pointerHeld;
+    }
+
+    function releasePointer(pointerId) {
+        const direction = activePointers.get(pointerId);
+        if (!direction) {
+            return;
+        }
+        activePointers.delete(pointerId);
+        updateDirection(direction);
+    }
+
+    function onTouchButtonDown(event) {
+        event.preventDefault();
+        const button = event.currentTarget;
+        const direction = button.dataset.moveDirection;
+        activePointers.set(event.pointerId, direction);
+        updateDirection(direction);
+        if (button.setPointerCapture) {
+            button.setPointerCapture(event.pointerId);
+        }
+    }
+
+    function onTouchButtonUp(event) {
+        releasePointer(event.pointerId);
+    }
+
+    for (const button of touchButtons) {
+        button.addEventListener("pointerdown", onTouchButtonDown);
+        button.addEventListener("pointerup", onTouchButtonUp);
+        button.addEventListener("pointercancel", onTouchButtonUp);
+        button.addEventListener("lostpointercapture", onTouchButtonUp);
+    }
 
     function onKeyDown(event) {
         const key = event.key.toLowerCase();
@@ -36,7 +78,8 @@ export function setupInput(state) {
         if (key.startsWith("arrow")) {
             event.preventDefault();
         }
-        state.keys[direction] = true;
+        keyboardDirections.add(direction);
+        updateDirection(direction);
     }
 
     function onKeyUp(event) {
@@ -45,13 +88,16 @@ export function setupInput(state) {
         if (!direction) {
             return;
         }
-        state.keys[direction] = false;
+        keyboardDirections.delete(direction);
+        updateDirection(direction);
     }
 
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
 
     window.addEventListener("blur", () => {
+        activePointers.clear();
+        keyboardDirections.clear();
         resetKeys(state);
     });
 }

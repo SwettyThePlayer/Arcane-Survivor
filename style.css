@@ -112,6 +112,74 @@ body {
     fill: currentColor;
 }
 
+.touch-controls {
+    position: fixed;
+    bottom: max(20px, env(safe-area-inset-bottom));
+    left: max(18px, env(safe-area-inset-left));
+    z-index: 6;
+    display: none;
+    grid-template-columns: repeat(3, 54px);
+    grid-template-rows: repeat(3, 54px);
+    gap: 5px;
+    pointer-events: none;
+    touch-action: none;
+}
+
+.touch-controls button {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    padding: 0;
+    background: rgba(26, 21, 40, 0.72);
+    border: 1px solid rgba(192, 155, 255, 0.34);
+    border-radius: 15px;
+    color: #e4d7ff;
+    font-size: 24px;
+    line-height: 1;
+    pointer-events: auto;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    backdrop-filter: blur(8px);
+}
+
+.touch-controls button:active {
+    background: rgba(126, 87, 190, 0.75);
+    border-color: rgba(224, 205, 255, 0.7);
+    box-shadow: 0 0 18px rgba(155, 109, 255, 0.35);
+}
+
+.touch-controls [data-move-direction="up"] {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.touch-controls [data-move-direction="left"] {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.touch-controls [data-move-direction="down"] {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.touch-controls [data-move-direction="right"] {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+@media (pointer: coarse) {
+    .touch-controls:not([hidden]) {
+        display: grid;
+    }
+
+    #game-hud {
+        max-width: calc(100vw - 130px);
+    }
+}
+
 #audio-warning {
     position: fixed;
     right: 18px;
